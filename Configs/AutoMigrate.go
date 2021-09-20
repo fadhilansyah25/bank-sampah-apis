@@ -1,9 +1,9 @@
 package Configs
 
 import (
-	"golang-final-project/Models"
+	"golang-final-project/Models/Users"
 )
 
 func Migrate() {
-	DB.AutoMigrate(&Models.User{})
+	DB.AutoMigrate(&Users.User{})
 }
