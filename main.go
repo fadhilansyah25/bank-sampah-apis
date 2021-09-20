@@ -7,6 +7,6 @@ import (
 
 func main() {
 	Configs.Connection()
-	e := Routes.NewRoute()
+	e := Routes.RouteVersion1()
 	e.Start(":8000")
 }

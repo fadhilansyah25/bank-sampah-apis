@@ -1,15 +1,15 @@
 package Routes
 
 import (
-	"golang-final-project/Controllers"
+	UsersRoute "golang-final-project/Routes/Users"
 
 	"github.com/labstack/echo/v4"
 )
 
-func NewRoute() *echo.Echo {
+func RouteVersion1() *echo.Echo {
 	e := echo.New()
 	r1 := e.Group("v1/")
-	r1.POST("user", Controllers.UserRegister)
+	UsersRoute.UsersRouter(r1)
 
 	return e
 }
