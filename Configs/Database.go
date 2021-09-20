@@ -1,4 +1,4 @@
-package configs
+package Configs
 
 import (
 	"fmt"
@@ -7,10 +7,12 @@ import (
 	"strconv"
 
 	"github.com/joho/godotenv"
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
+var err error
 
 // DBConfig represents db configuration
 type DBConfig struct {
@@ -52,4 +54,14 @@ func DbURL(dbConfig *DBConfig) string {
 		dbConfig.Port,
 		dbConfig.DBName,
 	)
+}
+
+func Connection() {
+	dsn := DbURL(BuildDBConfig())
+	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+
+	if err != nil {
+		fmt.Println("Status:", err)
+	}
+	Migrate()
 }
