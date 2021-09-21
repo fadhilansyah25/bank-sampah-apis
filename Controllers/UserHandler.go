@@ -17,10 +17,10 @@ func UserRegister(c echo.Context) error {
 
 	result := Configs.DB.Create(&users)
 	if result.Error != nil {
-		return c.JSON(http.StatusInternalServerError, Response.Respond(http.StatusAccepted, "Error save data to database", nil))
+		return c.JSON(http.StatusInternalServerError, Response.Respond(http.StatusInternalServerError, "Error save data to database", nil))
 	}
 
-	return c.JSON(http.StatusCreated, Response.Respond(http.StatusCreated, "Successful create data", users))
+	return c.JSON(http.StatusCreated, Response.Respond(http.StatusCreated, "Successful create data", &users))
 }
 
 //GetUsers ... Get all users
@@ -33,7 +33,7 @@ func GetAllUser(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, Response.Respond(http.StatusInternalServerError, "Cannot retrieve data from database", nil))
 	}
 
-	return c.JSON(http.StatusCreated, Response.Respond(http.StatusCreated, "Successful retrieve data", users))
+	return c.JSON(http.StatusOK, Response.Respond(http.StatusOK, "Successful retrieve data", &users))
 }
 
 //GetUserByID ... Get the user by id
@@ -42,7 +42,7 @@ func GetUserByID(c echo.Context) error {
 
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, Response.Respond(http.StatusBadRequest, "Path parameter invalid", nil))
+		return c.JSON(http.StatusUnprocessableEntity, Response.Respond(http.StatusUnprocessableEntity, "Path parameter invalid", nil))
 	}
 
 	result := Configs.DB.First(&user, id)
@@ -51,7 +51,7 @@ func GetUserByID(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, Response.Respond(http.StatusInternalServerError, "Cannot retrieve data from database", nil))
 	}
 
-	return c.JSON(http.StatusCreated, Response.Respond(http.StatusCreated, "Successful retrieve data", user))
+	return c.JSON(http.StatusOK, Response.Respond(http.StatusOK, "Successful retrieve data", &user))
 }
 
 //UpdateUser ... Update the user information
@@ -76,7 +76,7 @@ func UpdateUser(c echo.Context) error {
 		}
 	}
 
-	return c.JSON(http.StatusAccepted, Response.Respond(http.StatusAccepted, "Successful update data", user))
+	return c.JSON(http.StatusAccepted, Response.Respond(http.StatusAccepted, "Successful update data", &user))
 }
 
 //DeleteUser ... Delete the user
@@ -100,5 +100,5 @@ func DeleteUser(c echo.Context) error {
 		}
 	}
 
-	return c.JSON(http.StatusAccepted, Response.Respond(http.StatusAccepted, "Successful Delete data", user))
+	return c.JSON(http.StatusAccepted, Response.Respond(http.StatusAccepted, "Successful Delete data", &user))
 }
