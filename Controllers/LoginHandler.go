@@ -3,6 +3,7 @@ package Controllers
 import (
 	"golang-final-project/Configs"
 	"golang-final-project/Helper"
+	"golang-final-project/Middleware"
 	"golang-final-project/Models/Login"
 	"golang-final-project/Models/Response"
 	"golang-final-project/Models/Users"
@@ -40,6 +41,8 @@ func GetAllUserLogin(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, Response.Respond(http.StatusInternalServerError, "Cannot retrieve data from database", nil))
 	}
 
+	Middleware.GetClaimsUserId(c)
+
 	return c.JSON(http.StatusOK, Response.Respond(http.StatusOK, "Successful retrieve data", &userlogins))
 }
 
@@ -48,14 +51,14 @@ func UserLogin(c echo.Context) error {
 	var login Login.Login
 	c.Bind(&login)
 
+	// check form input
 	if login.Email == "" && login.Username == "" {
 		return c.JSON(http.StatusBadRequest, Response.Respond(http.StatusBadRequest, "invalid input", nil))
-	}
-
-	if login.Password == "" {
+	} else if login.Password == "" {
 		return c.JSON(http.StatusBadRequest, Response.Respond(http.StatusBadRequest, "invalid input", nil))
 	}
 
+	// check data to database
 	var userlogin Login.LoginDataUsers
 	res := Configs.DB.Where("username = ? OR email = ?", login.Username, login.Email).Find(&userlogin)
 	if res.Error != nil {
@@ -71,7 +74,21 @@ func UserLogin(c echo.Context) error {
 		return c.JSON(http.StatusForbidden, Response.Respond(http.StatusForbidden, "access denied: password did not match", &access))
 	}
 
-	return c.JSON(http.StatusAccepted, Response.Respond(http.StatusAccepted, "access complete", &access))
+	tokenLogin, err := Middleware.GenerateTokenJWT(int(userlogin.UserId))
+
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, Response.Respond(http.StatusInternalServerError, "failed create token", nil))
+	}
+
+	loginResponse := Login.LoginResponse{
+		Id:        int(userlogin.UserId),
+		Username:  userlogin.Username,
+		Email:     userlogin.Email,
+		Token:     tokenLogin,
+		CreatedAt: userlogin.CreatedAt,
+		UpdatedAt: userlogin.UpdatedAt,
+	}
+	return c.JSON(http.StatusAccepted, Response.Respond(http.StatusAccepted, "access complete", &loginResponse))
 }
 
 // UpdateUserLogin ... Update User Login Data
