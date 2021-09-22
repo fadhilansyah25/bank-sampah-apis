@@ -7,17 +7,16 @@ import (
 )
 
 type User struct {
-	Id             uint           `json:"id" gorm:"primary-key" `
-	NIK            string         `json:"nik" gorm:"unique;size:256"`
-	NamaDepan      string         `json:"namaDepan" gorm:"size:256"`
-	NamaBelakang   string         `json:"namaBelakang" gorm:"size:256"`
-	Email          string         `json:"email" gorm:"unique"`
-	TanggalLahir   string         `json:"tanggalLahir" gorm:"type:date"`
-	NoTelepon      string         `json:"noTelepon" gorm:"size:256"`
-	Alamat         string         `json:"alamat"`
-	Kabupaten_Kota string         `json:"kabupaten_kota" gorm:"size:256"`
-	Provinsi       string         `json:"provinsi" gorm:"size:256"`
+	Id             uint           `gorm:"primaryKey; unique; not null" json:"id"`
+	NIK            string         `gorm:"size:255; not null; unique" json:"nik"`
+	NamaDepan      string         `gorm:"size:255; not null" json:"namaDepan"`
+	NamaBelakang   string         `gorm:"size:255;not null" json:"namaBelakang"`
+	TanggalLahir   string         `gorm:"type:date;not null" json:"tanggalLahir"`
+	NoTelepon      string         `gorm:"size:255;not null" json:"noTelepon"`
+	Alamat         string         `gorm:"size:1000;not null" json:"alamat"`
+	Kabupaten_Kota string         `gorm:"size:255;not null" json:"kabupaten_kota"`
+	Provinsi       string         `gorm:"size:255;not null" json:"provinsi"`
 	CreatedAt      time.Time      `json:"createdAt"`
 	UpdatedAt      time.Time      `json:"updatedAt"`
-	DeletedAt      gorm.DeletedAt `json:"deletedAt" gorm:"index"`
+	DeletedAt      gorm.DeletedAt `gorm:"index" json:"deletedAt"`
 }
