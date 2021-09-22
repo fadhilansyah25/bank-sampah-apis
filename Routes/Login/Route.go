@@ -10,10 +10,9 @@ import (
 
 func UserLoginRoute(route *echo.Group) {
 	jwtSecretKey := os.Getenv("SECRET_JWT")
-
 	jwt := middleware.JWT([]byte(jwtSecretKey))
 
-	route.POST("user-login", Controllers.CreateUserLogin, jwt)
+	route.POST("create-login", Controllers.CreateUserLogin, jwt)
 	route.GET("user-login", Controllers.GetAllUserLogin, jwt)
 	route.POST("login", Controllers.UserLogin)
 	route.PUT("user-login/:id", Controllers.UpdateUserLogin, jwt)
