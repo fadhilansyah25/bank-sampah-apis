@@ -18,7 +18,7 @@ func RouteVersion1() *echo.Echo {
 	}))
 	e.Use(middleware.BodyDump(Middleware.Log))
 
-	r1 := e.Group("v1/")
+	r1 := e.Group("api/v1/")
 	UsersRoute.UsersRouter(r1)
 	LoginRoute.UserLoginRoute(r1)
 
