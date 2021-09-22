@@ -6,5 +6,9 @@ import (
 )
 
 func Migrate() {
-	DB.AutoMigrate(&Users.User{}, &Users.LoginDataUsers{}, &BankSampah.BankSampah{})
+	DB.AutoMigrate(
+		&Users.User{},
+		&Users.LoginDataUsers{},
+		&BankSampah.BankSampah{},
+		&BankSampah.OperatorSampah{})
 }
