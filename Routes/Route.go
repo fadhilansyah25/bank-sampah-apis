@@ -2,6 +2,7 @@ package Routes
 
 import (
 	"golang-final-project/Middleware"
+	BankSampahRoute "golang-final-project/Routes/BankSampah"
 	LoginRoute "golang-final-project/Routes/Login"
 	UsersRoute "golang-final-project/Routes/Users"
 
@@ -21,6 +22,7 @@ func RouteVersion1() *echo.Echo {
 	r1 := e.Group("api/v1/")
 	UsersRoute.UsersRouter(r1)
 	LoginRoute.UserLoginRoute(r1)
+	BankSampahRoute.BankSampahRouter(r1)
 
 	return e
 }
