@@ -1,8 +1,7 @@
 package Middleware
 
 import (
-	"encoding/json"
-	"fmt"
+	"errors"
 	"os"
 	"time"
 
@@ -25,12 +24,12 @@ func GenerateTokenJWT(id int) (string, error) {
 		},
 	}
 
-	out, err := json.Marshal(claims)
-	if err != nil {
-		panic(err)
-	}
+	// out, err := json.Marshal(claims)
+	// if err != nil {
+	// 	panic(err)
+	// }
 
-	fmt.Println(string(out))
+	// fmt.Println(string(out))
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
@@ -43,9 +42,15 @@ func GenerateTokenJWT(id int) (string, error) {
 	return jwtToken, nil
 }
 
-func GetClaimsUserId(c echo.Context) int {
-	user := c.Get("user").(*jwt.Token)
-	claims := user.Claims.(jwt.MapClaims)
-	userId := claims["userId"].(float64)
-	return int(userId)
+func GetClaimsUserId(c echo.Context) (int, error) {
+	user := c.Get("user")
+	if user != nil {
+		userJwt := user.(*jwt.Token)
+		if userJwt.Valid {
+			claims := userJwt.Claims.(jwt.MapClaims)
+			userId := claims["userId"].(float64)
+			return int(userId), nil
+		}
+	}
+	return 0, errors.New("failed create jwt")
 }

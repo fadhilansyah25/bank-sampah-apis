@@ -20,17 +20,30 @@ func CreateUserLogin(c echo.Context) error {
 
 	c.Bind(&userlogin)
 	if res := Configs.DB.Where("id = ?", userlogin.UserId).Find(&user); res.Error != nil {
-		return c.JSON(http.StatusNotAcceptable, Response.Respond(http.StatusNotAcceptable, "Data not Found", nil))
+		return c.JSON(http.StatusNotAcceptable, Response.BaseResponse{
+			Code:    http.StatusNotAcceptable,
+			Message: "Data not Found",
+			Data:    nil,
+		})
 	}
 
 	userlogin.Password = Helper.Encript(userlogin.Password)
 	userlogin.User = user
 
 	if res := Configs.DB.Create(&userlogin); res.Error != nil {
-		return c.JSON(http.StatusInternalServerError, Response.Respond(http.StatusInternalServerError, "Failed create data to database", nil))
+		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
+			Code:    http.StatusInternalServerError,
+			Message: "Failed create data to database",
+			Data:    nil,
+		})
 	}
 
-	return c.JSON(http.StatusCreated, Response.Respond(http.StatusCreated, "Success", &userlogin))
+	return c.JSON(http.StatusAccepted, Response.BaseResponse{
+		Code:    http.StatusAccepted,
+		Message: "Success create userlogin",
+		Data:    &userlogin,
+	})
+
 }
 
 // GetAllUserVerification ... All User Verifation Data
@@ -38,12 +51,18 @@ func GetAllUserLogin(c echo.Context) error {
 	var userlogins = []Login.LoginDataUsers{}
 
 	if res := Configs.DB.Joins("User").Find(&userlogins); res.Error != nil {
-		return c.JSON(http.StatusInternalServerError, Response.Respond(http.StatusInternalServerError, "Cannot retrieve data from database", nil))
+		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
+			Code:    http.StatusInternalServerError,
+			Message: "Cannot retrieve data from database",
+			Data:    nil,
+		})
 	}
 
-	Middleware.GetClaimsUserId(c)
-
-	return c.JSON(http.StatusOK, Response.Respond(http.StatusOK, "Successful retrieve data", &userlogins))
+	return c.JSON(http.StatusAccepted, Response.BaseResponse{
+		Code:    http.StatusAccepted,
+		Message: "Successful retrieve data",
+		Data:    &userlogins,
+	})
 }
 
 // UserLoginValidation ... All User Verifation Data
@@ -53,33 +72,59 @@ func UserLogin(c echo.Context) error {
 
 	// check form input
 	if login.Email == "" && login.Username == "" {
-		return c.JSON(http.StatusBadRequest, Response.Respond(http.StatusBadRequest, "invalid input", nil))
+		return c.JSON(http.StatusBadRequest, Response.BaseResponse{
+			Code:    http.StatusBadRequest,
+			Message: "invalid input",
+			Data:    nil,
+		})
 	} else if login.Password == "" {
-		return c.JSON(http.StatusBadRequest, Response.Respond(http.StatusBadRequest, "invalid input", nil))
+		return c.JSON(http.StatusBadRequest, Response.BaseResponse{
+			Code:    http.StatusBadRequest,
+			Message: "invalid input",
+			Data:    nil,
+		})
 	}
 
 	// check data to database
 	var userlogin Login.LoginDataUsers
 	res := Configs.DB.Where("username = ? OR email = ?", login.Username, login.Email).Find(&userlogin)
 	if res.Error != nil {
-		return c.JSON(http.StatusInternalServerError, Response.Respond(http.StatusInternalServerError, "cannot retrieve data", &userlogin))
+		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
+			Code:    http.StatusInternalServerError,
+			Message: "Cannot retrieve data from database",
+			Data:    nil,
+		})
 	}
 
 	if userlogin.Email == "" || userlogin.Username == "" || userlogin.Password == "" {
-		return c.JSON(http.StatusForbidden, Response.Respond(http.StatusForbidden, "access denied: email or username invalid", nil))
+		return c.JSON(http.StatusForbidden, Response.BaseResponse{
+			Code:    http.StatusForbidden,
+			Message: "access denied: email or username invalid",
+			Data:    nil,
+		})
 	}
 
+	// compare password with hashed
 	access := Helper.ComparePassword(userlogin.Password, login.Password)
 	if !access {
-		return c.JSON(http.StatusForbidden, Response.Respond(http.StatusForbidden, "access denied: password did not match", &access))
+		return c.JSON(http.StatusForbidden, Response.BaseResponse{
+			Code:    http.StatusForbidden,
+			Message: "access denied: password did not match",
+			Data:    nil,
+		})
 	}
 
+	// get token
 	tokenLogin, err := Middleware.GenerateTokenJWT(int(userlogin.UserId))
-
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, Response.Respond(http.StatusInternalServerError, "failed create token", nil))
+		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
+			Code:    http.StatusInternalServerError,
+			Message: "failed create token",
+			Data:    nil,
+		})
 	}
 
+	// set login response
 	loginResponse := Login.LoginResponse{
 		Id:        int(userlogin.UserId),
 		Username:  userlogin.Username,
@@ -88,20 +133,33 @@ func UserLogin(c echo.Context) error {
 		CreatedAt: userlogin.CreatedAt,
 		UpdatedAt: userlogin.UpdatedAt,
 	}
-	return c.JSON(http.StatusAccepted, Response.Respond(http.StatusAccepted, "access complete", &loginResponse))
+
+	return c.JSON(http.StatusAccepted, Response.BaseResponse{
+		Code:    http.StatusAccepted,
+		Message: "access complete",
+		Data:    &loginResponse,
+	})
 }
 
 // UpdateUserLogin ... Update User Login Data
 func UpdateUserLogin(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return c.JSON(http.StatusUnprocessableEntity, Response.Respond(http.StatusUnprocessableEntity, "Path parameter invalid", nil))
+		return c.JSON(http.StatusUnprocessableEntity, Response.BaseResponse{
+			Code:    http.StatusUnprocessableEntity,
+			Message: "Path parameter invalid",
+			Data:    nil,
+		})
 	}
 
 	var userlogin Login.LoginDataUsers
 	result := Configs.DB.First(&userlogin, id)
 	if result.Error != nil {
-		return c.JSON(http.StatusNotAcceptable, Response.Respond(http.StatusNotAcceptable, "Data not Found", nil))
+		return c.JSON(http.StatusNotAcceptable, Response.BaseResponse{
+			Code:    http.StatusNotAcceptable,
+			Message: "Data not Found",
+			Data:    nil,
+		})
 	}
 
 	c.Bind(&userlogin)
@@ -109,10 +167,16 @@ func UpdateUserLogin(c echo.Context) error {
 
 	result = Configs.DB.Save(&userlogin)
 	if result.Error != nil {
-		if result.Error != nil {
-			return c.JSON(http.StatusInternalServerError, Response.Respond(http.StatusInternalServerError, "Cannot Update data to database", nil))
-		}
+		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
+			Code:    http.StatusInternalServerError,
+			Message: "Cannot Update data to database",
+			Data:    nil,
+		})
 	}
 
-	return c.JSON(http.StatusAccepted, Response.Respond(http.StatusAccepted, "Successful update data", &userlogin))
+	return c.JSON(http.StatusAccepted, Response.BaseResponse{
+		Code:    http.StatusAccepted,
+		Message: "Successful update data",
+		Data:    &userlogin,
+	})
 }
