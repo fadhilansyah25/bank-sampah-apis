@@ -4,7 +4,6 @@ import (
 	"golang-final-project/Configs"
 	"golang-final-project/Helper"
 	"golang-final-project/Middleware"
-	"golang-final-project/Models/Login"
 	"golang-final-project/Models/Response"
 	"golang-final-project/Models/Users"
 	"net/http"
@@ -15,7 +14,7 @@ import (
 
 // CreateUserLogin ... Post new meta Login
 func CreateUserLogin(c echo.Context) error {
-	var userlogin Login.LoginDataUsers
+	var userlogin Users.LoginDataUsers
 	var user Users.User
 
 	c.Bind(&userlogin)
@@ -48,7 +47,7 @@ func CreateUserLogin(c echo.Context) error {
 
 // GetAllUserVerification ... All User Verifation Data
 func GetAllUserLogin(c echo.Context) error {
-	var userlogins = []Login.LoginDataUsers{}
+	var userlogins = []Users.LoginDataUsers{}
 
 	if res := Configs.DB.Joins("User").Find(&userlogins); res.Error != nil {
 		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
@@ -67,7 +66,7 @@ func GetAllUserLogin(c echo.Context) error {
 
 // UserLoginValidation ... All User Verifation Data
 func UserLogin(c echo.Context) error {
-	var login Login.Login
+	var login Users.Login
 	c.Bind(&login)
 
 	// check form input
@@ -86,7 +85,7 @@ func UserLogin(c echo.Context) error {
 	}
 
 	// check data to database
-	var userlogin Login.LoginDataUsers
+	var userlogin Users.LoginDataUsers
 	res := Configs.DB.Where("username = ? OR email = ?", login.Username, login.Email).Find(&userlogin)
 	if res.Error != nil {
 		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
@@ -125,7 +124,7 @@ func UserLogin(c echo.Context) error {
 	}
 
 	// set login response
-	loginResponse := Login.LoginResponse{
+	loginResponse := Response.LoginResponse{
 		Id:        int(userlogin.UserId),
 		Username:  userlogin.Username,
 		Email:     userlogin.Email,
@@ -152,7 +151,7 @@ func UpdateUserLogin(c echo.Context) error {
 		})
 	}
 
-	var userlogin Login.LoginDataUsers
+	var userlogin Users.LoginDataUsers
 	result := Configs.DB.First(&userlogin, id)
 	if result.Error != nil {
 		return c.JSON(http.StatusNotAcceptable, Response.BaseResponse{

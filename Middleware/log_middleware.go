@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"golang-final-project/Models/RequestLogging"
 	"log"
 	"time"
 
@@ -13,17 +14,6 @@ import (
 )
 
 var ctx = context.Background()
-
-type RequestLog struct {
-	Time     time.Time `json:"time"`
-	UserId   int       `json:"userid"`
-	Host     string    `json:"host"`
-	Method   string    `json:"method"`
-	Url      string    `json:"string"`
-	Status   int       `json:"status"`
-	Message  string    `json:"message"`
-	RemoteIp string    `json:"remoteIp"`
-}
 
 func Log(c echo.Context, reqBody, resBody []byte) {
 	var data map[string]interface{}
@@ -36,7 +26,7 @@ func Log(c echo.Context, reqBody, resBody []byte) {
 
 	id, _ := GetClaimsUserId(c)
 
-	reqLogDB := RequestLog{
+	reqLogDB := RequestLogging.RequestLog{
 		Time:     time.Now(),
 		UserId:   id,
 		Host:     c.Request().Host,
@@ -67,7 +57,7 @@ func connect() (*mongo.Database, error) {
 	return client.Database("bank_sampah"), nil
 }
 
-func insert(requestLog *RequestLog) {
+func insert(requestLog *RequestLogging.RequestLog) {
 	db, err := connect()
 	if err != nil {
 		log.Fatal(err.Error())
