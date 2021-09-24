@@ -9,7 +9,7 @@ import (
 type OperatorSampah struct {
 	Id             uint           `gorm:"primaryKey; unique; not null" json:"id"`
 	NIK            string         `gorm:"size:255; not null; unique" json:"nik"`
-	BankSampahId   int            `json:"bankSampahId"`
+	BankSampahId   uint           `json:"bankSampahId"`
 	NamaDepan      string         `gorm:"size:255; not null" json:"namaDepan"`
 	NamaBelakang   string         `gorm:"size:255;not null" json:"namaBelakang"`
 	TanggalLahir   string         `gorm:"type:date;not null" json:"tanggalLahir"`

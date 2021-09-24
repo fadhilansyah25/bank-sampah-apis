@@ -2,6 +2,7 @@ package Configs
 
 import (
 	"golang-final-project/Models/BankSampah"
+	"golang-final-project/Models/Transaction"
 	"golang-final-project/Models/Users"
 )
 
@@ -10,5 +11,9 @@ func Migrate() {
 		&Users.User{},
 		&Users.LoginDataUsers{},
 		&BankSampah.BankSampah{},
-		&BankSampah.OperatorSampah{})
+		&BankSampah.OperatorSampah{},
+		&Transaction.JenisSampah{},
+		&Transaction.Transaction{},
+		&Transaction.DetailTransaction{},
+	)
 }
