@@ -2,20 +2,20 @@ package Controllers
 
 import (
 	"golang-final-project/Configs"
-	"golang-final-project/Models/BankSampah"
 	"golang-final-project/Models/Response"
+	"golang-final-project/Models/Transaction"
 	"net/http"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
 
-// Register Operator Sampah
-func OperatorSampahRegister(c echo.Context) error {
-	var operator BankSampah.OperatorSampah
-	c.Bind(&operator)
+// Add Jenis Sampah
+func AddJenisSampah(c echo.Context) error {
+	var jenisSampah Transaction.JenisSampah
+	c.Bind(&jenisSampah)
 
-	result := Configs.DB.Create(&operator)
+	result := Configs.DB.Create(&jenisSampah)
 	if result.Error != nil {
 		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
 			Code:    http.StatusInternalServerError,
@@ -24,26 +24,18 @@ func OperatorSampahRegister(c echo.Context) error {
 		})
 	}
 
-	if res := Configs.DB.Preload("BankSampah").Find(&operator); res.Error != nil {
-		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
-			Code:    http.StatusInternalServerError,
-			Message: "Error retrieve data after saved",
-			Data:    nil,
-		})
-	}
-
 	return c.JSON(http.StatusCreated, Response.BaseResponse{
 		Code:    http.StatusCreated,
 		Message: "Successful create data",
-		Data:    &operator,
+		Data:    &jenisSampah,
 	})
 }
 
-// Get All Operator Sampah Data
-func GetAllOperatorSampah(c echo.Context) error {
-	var operator = []BankSampah.OperatorSampah{}
+// Get All Data Jenis Sampah
+func GetAllJenisSampah(c echo.Context) error {
+	var jenisSampah = []Transaction.JenisSampah{}
 
-	result := Configs.DB.Preload("BankSampah").Find(&operator)
+	result := Configs.DB.Find(&jenisSampah)
 	if result.Error != nil {
 		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
 			Code:    http.StatusInternalServerError,
@@ -55,13 +47,13 @@ func GetAllOperatorSampah(c echo.Context) error {
 	return c.JSON(http.StatusOK, Response.BaseResponse{
 		Code:    http.StatusOK,
 		Message: "Successful retrieve data",
-		Data:    &operator,
+		Data:    &jenisSampah,
 	})
 }
 
-// Get Bank Sampah by ID
-func GetOperatorSampahById(c echo.Context) error {
-	var operator BankSampah.OperatorSampah
+// Get Jenis Sampah by ID
+func GetJenisSampahById(c echo.Context) error {
+	var jenisSampah Transaction.JenisSampah
 
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -72,7 +64,8 @@ func GetOperatorSampahById(c echo.Context) error {
 		})
 	}
 
-	result := Configs.DB.Preload("BankSampah").First(&operator, id)
+	result := Configs.DB.First(&jenisSampah, id)
+
 	if result.Error != nil {
 		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
 			Code:    http.StatusInternalServerError,
@@ -84,13 +77,13 @@ func GetOperatorSampahById(c echo.Context) error {
 	return c.JSON(http.StatusOK, Response.BaseResponse{
 		Code:    http.StatusOK,
 		Message: "Successful retrieve data",
-		Data:    &operator,
+		Data:    &jenisSampah,
 	})
 }
 
-// Update Bank Sampah
-func UpdateOperatorSampah(c echo.Context) error {
-	var operator BankSampah.OperatorSampah
+// Update Jenis Sampah
+func UpdateJenisSampah(c echo.Context) error {
+	var JenisSampah Transaction.JenisSampah
 
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -101,7 +94,7 @@ func UpdateOperatorSampah(c echo.Context) error {
 		})
 	}
 
-	result := Configs.DB.First(&operator, id)
+	result := Configs.DB.First(&JenisSampah, id)
 	if result.Error != nil {
 		return c.JSON(http.StatusNotAcceptable, Response.BaseResponse{
 			Code:    http.StatusNotAcceptable,
@@ -110,9 +103,8 @@ func UpdateOperatorSampah(c echo.Context) error {
 		})
 	}
 
-	c.Bind(&operator)
-	Configs.DB.Model(&operator).Update("BankSampahId", operator.BankSampahId)
-	result = Configs.DB.Save(&operator)
+	c.Bind(&JenisSampah)
+	result = Configs.DB.Save(&JenisSampah)
 	if result.Error != nil {
 		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
 			Code:    http.StatusInternalServerError,
@@ -121,17 +113,16 @@ func UpdateOperatorSampah(c echo.Context) error {
 		})
 	}
 
-	Configs.DB.Preload("BankSampah").First(&operator, id)
 	return c.JSON(http.StatusAccepted, Response.BaseResponse{
 		Code:    http.StatusAccepted,
 		Message: "Successful update data",
-		Data:    &operator,
+		Data:    &JenisSampah,
 	})
 }
 
-// Delete Operator Sampah
-func DeleteOperatorSampah(c echo.Context) error {
-	var operator BankSampah.OperatorSampah
+// Delete Jenis Sampah
+func DeleteJenisSampah(c echo.Context) error {
+	var jenisSampah Transaction.JenisSampah
 
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -142,7 +133,7 @@ func DeleteOperatorSampah(c echo.Context) error {
 		})
 	}
 
-	result := Configs.DB.First(&operator, id)
+	result := Configs.DB.First(&jenisSampah, id)
 	if result.Error != nil {
 		return c.JSON(http.StatusNotAcceptable, Response.BaseResponse{
 			Code:    http.StatusNotAcceptable,
@@ -151,7 +142,7 @@ func DeleteOperatorSampah(c echo.Context) error {
 		})
 	}
 
-	result = Configs.DB.Where("id = ?", id).Unscoped().Delete(&operator)
+	result = Configs.DB.Where("id = ?", id).Unscoped().Delete(&jenisSampah)
 	if result.Error != nil {
 		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
 			Code:    http.StatusInternalServerError,
@@ -163,6 +154,6 @@ func DeleteOperatorSampah(c echo.Context) error {
 	return c.JSON(http.StatusAccepted, Response.BaseResponse{
 		Code:    http.StatusAccepted,
 		Message: "Successful Delete data",
-		Data:    &operator,
+		Data:    &jenisSampah,
 	})
 }
