@@ -13,8 +13,8 @@ func UsersRouter(route *echo.Group) {
 
 	jwt := middleware.JWT([]byte(jwtSecretKey))
 
-	route.POST("users", Controllers.UserRegister, jwt)
-	route.GET("users", Controllers.GetAllUser)
+	route.POST("users", Controllers.UserRegister)
+	route.GET("users", Controllers.GetAllUser, jwt)
 	route.GET("users/:id", Controllers.GetUserByID, jwt)
 	route.PUT("users/:id", Controllers.UpdateUser, jwt)
 	route.DELETE("users/:id", Controllers.DeleteUser, jwt)
