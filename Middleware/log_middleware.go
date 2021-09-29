@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"golang-final-project/Models/RequestLogging"
 	"log"
+	"os"
 	"time"
 
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -42,8 +44,18 @@ func Log(c echo.Context, reqBody, resBody []byte) {
 }
 
 func connect() (*mongo.Database, error) {
+	err := godotenv.Load(".env")
+
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
+
+	host := os.Getenv("DB_MONGO_HOST")
+	port := os.Getenv("DB_MONGO_PORT")
+	mongoUri := fmt.Sprintf("mongodb://%s:%s", host, port)
+
 	clientOptions := options.Client()
-	clientOptions.ApplyURI("mongodb://localhost:27017")
+	clientOptions.ApplyURI(mongoUri)
 	client, err := mongo.NewClient(clientOptions)
 	if err != nil {
 		return nil, err

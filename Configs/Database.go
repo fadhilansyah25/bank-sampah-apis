@@ -30,11 +30,11 @@ func BuildDBConfig() *DBConfig {
 		log.Fatalf("Error loading .env file")
 	}
 
-	host := os.Getenv("HOST")
-	port, _ := strconv.Atoi(os.Getenv("PORT"))
-	user := os.Getenv("USER")
-	password := os.Getenv("PASSWORD")
-	dbName := os.Getenv("DBNAME")
+	host := os.Getenv("DB_HOST")
+	port, _ := strconv.Atoi(os.Getenv("DB_PORT"))
+	user := os.Getenv("DB_USER")
+	password := os.Getenv("DB_PASSWORD")
+	dbName := os.Getenv("DB_NAME")
 
 	dbConfig := DBConfig{
 		Host:     host,
