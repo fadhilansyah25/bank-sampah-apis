@@ -37,8 +37,8 @@ func GetAllJenisSampah(c echo.Context) error {
 
 	result := Configs.DB.Find(&jenisSampah)
 	if result.Error != nil {
-		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
-			Code:    http.StatusInternalServerError,
+		return c.JSON(http.StatusNotAcceptable, Response.BaseResponse{
+			Code:    http.StatusNotAcceptable,
 			Message: "Cannot retrieve data from database",
 			Data:    nil,
 		})
@@ -67,8 +67,8 @@ func GetJenisSampahById(c echo.Context) error {
 	result := Configs.DB.First(&jenisSampah, id)
 
 	if result.Error != nil {
-		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
-			Code:    http.StatusInternalServerError,
+		return c.JSON(http.StatusGone, Response.BaseResponse{
+			Code:    http.StatusGone,
 			Message: "Cannot retrieve data from database",
 			Data:    nil,
 		})

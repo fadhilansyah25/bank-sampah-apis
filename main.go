@@ -8,5 +8,5 @@ import (
 func main() {
 	Configs.Connection()
 	e := Routes.RouteVersion1()
-	e.Start(":8000")
+	e.Start(":8080")
 }

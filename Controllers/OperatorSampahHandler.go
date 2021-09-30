@@ -45,8 +45,8 @@ func GetAllOperatorSampah(c echo.Context) error {
 
 	result := Configs.DB.Preload("BankSampah").Find(&operator)
 	if result.Error != nil {
-		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
-			Code:    http.StatusInternalServerError,
+		return c.JSON(http.StatusGone, Response.BaseResponse{
+			Code:    http.StatusGone,
 			Message: "Cannot retrieve data from database",
 			Data:    nil,
 		})
@@ -74,8 +74,8 @@ func GetOperatorSampahById(c echo.Context) error {
 
 	result := Configs.DB.Preload("BankSampah").First(&operator, id)
 	if result.Error != nil {
-		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
-			Code:    http.StatusInternalServerError,
+		return c.JSON(http.StatusGone, Response.BaseResponse{
+			Code:    http.StatusGone,
 			Message: "Cannot retrieve data from database",
 			Data:    nil,
 		})
@@ -103,8 +103,8 @@ func UpdateOperatorSampah(c echo.Context) error {
 
 	result := Configs.DB.First(&operator, id)
 	if result.Error != nil {
-		return c.JSON(http.StatusNotAcceptable, Response.BaseResponse{
-			Code:    http.StatusNotAcceptable,
+		return c.JSON(http.StatusGone, Response.BaseResponse{
+			Code:    http.StatusGone,
 			Message: "Data not Found",
 			Data:    nil,
 		})
@@ -144,8 +144,8 @@ func DeleteOperatorSampah(c echo.Context) error {
 
 	result := Configs.DB.First(&operator, id)
 	if result.Error != nil {
-		return c.JSON(http.StatusNotAcceptable, Response.BaseResponse{
-			Code:    http.StatusNotAcceptable,
+		return c.JSON(http.StatusGone, Response.BaseResponse{
+			Code:    http.StatusGone,
 			Message: "Data not Found",
 			Data:    nil,
 		})

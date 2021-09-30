@@ -64,6 +64,34 @@ func GetAllUserLogin(c echo.Context) error {
 	})
 }
 
+// UpdateUserLogin ... Update User Login Data
+func GetUserLoginByID(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusUnprocessableEntity, Response.BaseResponse{
+			Code:    http.StatusUnprocessableEntity,
+			Message: "Path parameter invalid",
+			Data:    nil,
+		})
+	}
+
+	var userlogin Users.LoginDataUsers
+	result := Configs.DB.First(&userlogin, id)
+	if result.Error != nil {
+		return c.JSON(http.StatusGone, Response.BaseResponse{
+			Code:    http.StatusGone,
+			Message: "Data not Found",
+			Data:    nil,
+		})
+	}
+
+	return c.JSON(http.StatusAccepted, Response.BaseResponse{
+		Code:    http.StatusAccepted,
+		Message: "Successful update data",
+		Data:    &userlogin,
+	})
+}
+
 // UserLoginValidation ... All User Verifation Data
 func UserLogin(c echo.Context) error {
 	var login Users.Login
