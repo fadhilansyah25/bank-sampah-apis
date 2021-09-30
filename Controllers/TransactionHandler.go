@@ -60,8 +60,8 @@ func GetAllTransaction(c echo.Context) error {
 
 	result := Configs.DB.Preload("DetailTransaction").Find(&trans)
 	if result.Error != nil {
-		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
-			Code:    http.StatusInternalServerError,
+		return c.JSON(http.StatusGone, Response.BaseResponse{
+			Code:    http.StatusGone,
 			Message: "Cannot retrieve data from database",
 			Data:    nil,
 		})
@@ -90,8 +90,8 @@ func GetTransactionById(c echo.Context) error {
 	result := Configs.DB.Preload("DetailTransaction").First(&trans, id)
 
 	if result.Error != nil {
-		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
-			Code:    http.StatusInternalServerError,
+		return c.JSON(http.StatusGone, Response.BaseResponse{
+			Code:    http.StatusGone,
 			Message: "Cannot retrieve data from database",
 			Data:    nil,
 		})
@@ -119,8 +119,8 @@ func UpdateTansaction(c echo.Context) error {
 
 	result := Configs.DB.Preload("DetailTransaction").First(&transaction, id)
 	if result.Error != nil {
-		return c.JSON(http.StatusNotAcceptable, Response.BaseResponse{
-			Code:    http.StatusNotAcceptable,
+		return c.JSON(http.StatusGone, Response.BaseResponse{
+			Code:    http.StatusGone,
 			Message: "Data not Found",
 			Data:    nil,
 		})
