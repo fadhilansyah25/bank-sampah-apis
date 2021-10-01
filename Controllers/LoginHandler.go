@@ -37,6 +37,7 @@ func CreateUserLogin(c echo.Context) error {
 		})
 	}
 
+	Configs.DB.Preload("User").Find(&userlogin)
 	return c.JSON(http.StatusAccepted, Response.BaseResponse{
 		Code:    http.StatusAccepted,
 		Message: "Success create userlogin",
