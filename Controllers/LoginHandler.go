@@ -27,7 +27,7 @@ func CreateUserLogin(c echo.Context) error {
 	}
 
 	userlogin.Password = Helper.Encript(userlogin.Password)
-	userlogin.User = user
+	userlogin.UserId = user.Id
 
 	if res := Configs.DB.Create(&userlogin); res.Error != nil {
 		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
@@ -37,6 +37,7 @@ func CreateUserLogin(c echo.Context) error {
 		})
 	}
 
+	Configs.DB.Preload("User").Find(&userlogin)
 	return c.JSON(http.StatusAccepted, Response.BaseResponse{
 		Code:    http.StatusAccepted,
 		Message: "Success create userlogin",
