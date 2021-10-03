@@ -33,10 +33,12 @@ WORKDIR /root/
 
 # Copy the Pre-built binary file from the previous stage. Observe we also copied the .env file
 COPY --from=builder /app/main .
-COPY --from=builder /app/.env .       
+COPY --from=builder /app/.env .     
+COPY --from=builder /app/shell/wait-for.sh .
+
 
 # Expose port 8080 to the outside world
 EXPOSE 8080
 
 #Command to run the executable
-CMD ["./main"]
+# CMD ["./main"]
