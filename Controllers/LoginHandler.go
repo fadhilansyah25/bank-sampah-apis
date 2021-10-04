@@ -5,6 +5,7 @@ import (
 	"golang-final-project/Helper"
 	"golang-final-project/Middleware"
 	"golang-final-project/Models/Response"
+	"golang-final-project/Models/UserLogins"
 	"golang-final-project/Models/Users"
 	"net/http"
 	"strconv"
@@ -14,7 +15,7 @@ import (
 
 // CreateUserLogin ... Post new meta Login
 func CreateUserLogin(c echo.Context) error {
-	var userlogin Users.LoginDataUsers
+	var userlogin UserLogins.LoginDataUsers
 	var user Users.User
 
 	c.Bind(&userlogin)
@@ -48,7 +49,7 @@ func CreateUserLogin(c echo.Context) error {
 
 // GetAllUserVerification ... All User Verifation Data
 func GetAllUserLogin(c echo.Context) error {
-	var userlogins = []Users.LoginDataUsers{}
+	var userlogins = []UserLogins.LoginDataUsers{}
 
 	if res := Configs.DB.Joins("User").Find(&userlogins); res.Error != nil {
 		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
@@ -76,7 +77,7 @@ func GetUserLoginByID(c echo.Context) error {
 		})
 	}
 
-	var userlogin Users.LoginDataUsers
+	var userlogin UserLogins.LoginDataUsers
 	result := Configs.DB.First(&userlogin, id)
 	if result.Error != nil {
 		return c.JSON(http.StatusGone, Response.BaseResponse{
@@ -95,7 +96,7 @@ func GetUserLoginByID(c echo.Context) error {
 
 // UserLoginValidation ... All User Verifation Data
 func UserLogin(c echo.Context) error {
-	var login Users.Login
+	var login UserLogins.Login
 	c.Bind(&login)
 
 	// check form input
@@ -114,7 +115,7 @@ func UserLogin(c echo.Context) error {
 	}
 
 	// check data to database
-	var userlogin Users.LoginDataUsers
+	var userlogin UserLogins.LoginDataUsers
 	res := Configs.DB.Where("username = ? OR email = ?", login.Username, login.Email).Find(&userlogin)
 	if res.Error != nil {
 		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
@@ -180,7 +181,7 @@ func UpdateUserLogin(c echo.Context) error {
 		})
 	}
 
-	var userlogin Users.LoginDataUsers
+	var userlogin UserLogins.LoginDataUsers
 	result := Configs.DB.First(&userlogin, id)
 	if result.Error != nil {
 		return c.JSON(http.StatusNotAcceptable, Response.BaseResponse{
