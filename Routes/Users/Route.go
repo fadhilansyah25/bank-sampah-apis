@@ -9,10 +9,9 @@ import (
 
 func UsersRouter(route *echo.Group) {
 	// jwtSecretKey := os.Getenv("SECRET_JWT")
-
 	// jwt := middleware.JWT([]byte(jwtSecretKey))
-	api := &UserHandler.APIEnv{}
-	api.DB = Configs.DB
+
+	api := &UserHandler.APIEnv{DB: Configs.DB}
 
 	route.POST("users", api.CreateUser)
 	route.GET("users", api.GetUsers)

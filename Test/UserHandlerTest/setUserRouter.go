@@ -45,7 +45,7 @@ func setUpdateUserRouter(db *gorm.DB, body *bytes.Buffer) (*http.Request, *httpt
 	e := echo.New()
 	api := &UserHandler.APIEnv{DB: db}
 	e.PUT("/api/v1/users/:id", api.UpdateUser)
-	req, err := http.NewRequest(http.MethodPut, "/api/v1/users/1", body)
+	req, err := http.NewRequest(http.MethodPut, "/api/v1/users/2", body)
 	if err != nil {
 		return req, httptest.NewRecorder(), err
 	}
@@ -60,7 +60,7 @@ func setDeleteUserRouter(db *gorm.DB) (*http.Request, *httptest.ResponseRecorder
 	e := echo.New()
 	api := &UserHandler.APIEnv{DB: db}
 	e.DELETE("/api/v1/users/:id", api.DeleteUser)
-	req, err := http.NewRequest(http.MethodDelete, "/api/v1/users/1", nil)
+	req, err := http.NewRequest(http.MethodDelete, "/api/v1/users/2", nil)
 	if err != nil {
 		return req, httptest.NewRecorder(), err
 	}
