@@ -1,4 +1,4 @@
-package Users
+package UserLogins
 
 type Login struct {
 	Email    string `form:"email"`

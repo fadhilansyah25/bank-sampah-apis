@@ -1,19 +1,23 @@
 package BankSampahRoute
 
 import (
-	"golang-final-project/Controllers"
+	"golang-final-project/Configs"
+	"golang-final-project/Controllers/BankSampahHandler"
+	"os"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func BankSampahRouter(route *echo.Group) {
-	// jwtSecretKey := os.Getenv("SECRET_JWT")
+	jwtSecretKey := os.Getenv("SECRET_JWT")
+	jwt := middleware.JWT([]byte(jwtSecretKey))
 
-	// jwt := middleware.JWT([]byte(jwtSecretKey))
+	api := BankSampahHandler.APIEnv{DB: Configs.DB}
 
-	route.POST("bank-sampah", Controllers.BankSampahRegister)
-	route.GET("bank-sampah", Controllers.GetAllBankSampah)
-	route.GET("bank-sampah/:id", Controllers.GetBankSampahById)
-	route.PUT("bank-sampah/:id", Controllers.UpdateBankSampah)
-	route.DELETE("bank-sampah/:id", Controllers.DeleteBankSampah)
+	route.POST("bank-sampah", api.BankSampahRegister, jwt)
+	route.GET("bank-sampah", api.GetAllBankSampah, jwt)
+	route.GET("bank-sampah/:id", api.GetBankSampahById, jwt)
+	route.PUT("bank-sampah/:id", api.UpdateBankSampah, jwt)
+	route.DELETE("bank-sampah/:id", api.DeleteBankSampah, jwt)
 }

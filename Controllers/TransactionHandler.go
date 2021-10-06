@@ -38,7 +38,7 @@ func AddTransaction(c echo.Context) error {
 	if res.Error != nil {
 		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
 			Code:    http.StatusInternalServerError,
-			Message: "Cannot save data to database",
+			Message: "cannot save data to database",
 			Data:    nil,
 		})
 	}
@@ -49,7 +49,7 @@ func AddTransaction(c echo.Context) error {
 
 	return c.JSON(http.StatusCreated, Response.BaseResponse{
 		Code:    http.StatusCreated,
-		Message: "Successful create data",
+		Message: "successful create data",
 		Data:    &trans,
 	})
 }
@@ -62,14 +62,14 @@ func GetAllTransaction(c echo.Context) error {
 	if result.Error != nil {
 		return c.JSON(http.StatusGone, Response.BaseResponse{
 			Code:    http.StatusGone,
-			Message: "Cannot retrieve data from database",
+			Message: "cannot retrieve data from database",
 			Data:    nil,
 		})
 	}
 
 	return c.JSON(http.StatusOK, Response.BaseResponse{
 		Code:    http.StatusOK,
-		Message: "Successful retrieve data",
+		Message: "successful retrieve data",
 		Data:    &trans,
 	})
 }
@@ -82,7 +82,7 @@ func GetTransactionById(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, Response.BaseResponse{
 			Code:    http.StatusUnprocessableEntity,
-			Message: "Path parameter invalid",
+			Message: "path parameter invalid",
 			Data:    nil,
 		})
 	}
@@ -92,14 +92,14 @@ func GetTransactionById(c echo.Context) error {
 	if result.Error != nil {
 		return c.JSON(http.StatusGone, Response.BaseResponse{
 			Code:    http.StatusGone,
-			Message: "Cannot retrieve data from database",
+			Message: "cannot retrieve data from database",
 			Data:    nil,
 		})
 	}
 
 	return c.JSON(http.StatusOK, Response.BaseResponse{
 		Code:    http.StatusOK,
-		Message: "Successful retrieve data",
+		Message: "successful retrieve data",
 		Data:    &trans,
 	})
 }
@@ -112,7 +112,7 @@ func UpdateTansaction(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, Response.BaseResponse{
 			Code:    http.StatusUnprocessableEntity,
-			Message: "Path parameter invalid",
+			Message: "path parameter invalid",
 			Data:    nil,
 		})
 	}
@@ -121,7 +121,7 @@ func UpdateTansaction(c echo.Context) error {
 	if result.Error != nil {
 		return c.JSON(http.StatusGone, Response.BaseResponse{
 			Code:    http.StatusGone,
-			Message: "Data not Found",
+			Message: "data not found",
 			Data:    nil,
 		})
 	}
@@ -131,7 +131,7 @@ func UpdateTansaction(c echo.Context) error {
 	if result.Error != nil {
 		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
 			Code:    http.StatusInternalServerError,
-			Message: "Cannot Update data to database",
+			Message: "cannot update data to database",
 			Data:    nil,
 		})
 	}
@@ -139,7 +139,7 @@ func UpdateTansaction(c echo.Context) error {
 	Configs.DB.Preload("DetailTransaction").First(&transaction, id)
 	return c.JSON(http.StatusAccepted, Response.BaseResponse{
 		Code:    http.StatusAccepted,
-		Message: "Successful update data",
+		Message: "successful update data",
 		Data:    &transaction,
 	})
 }

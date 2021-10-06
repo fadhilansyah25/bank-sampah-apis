@@ -1,7 +1,8 @@
 package LoginRoute
 
 import (
-	"golang-final-project/Controllers"
+	"golang-final-project/Configs"
+	"golang-final-project/Controllers/UserLoginHandler"
 	"os"
 
 	"github.com/labstack/echo/v4"
@@ -12,8 +13,11 @@ func UserLoginRoute(route *echo.Group) {
 	jwtSecretKey := os.Getenv("SECRET_JWT")
 	jwt := middleware.JWT([]byte(jwtSecretKey))
 
-	route.POST("create-login", Controllers.CreateUserLogin, jwt)
-	route.GET("user-login", Controllers.GetAllUserLogin, jwt)
-	route.POST("login", Controllers.UserLogin)
-	route.PUT("user-login/:id", Controllers.UpdateUserLogin, jwt)
+	api := UserLoginHandler.APIEnv{DB: Configs.DB}
+
+	route.POST("create-login", api.CreateUserLogin)
+	route.POST("login", api.Login)
+	route.GET("user-login", api.GetAlluserLogin, jwt)
+	route.GET("user-login/:id", api.GetUserLoginByID, jwt)
+	route.PUT("user-login/:id", api.UpdateUserLogin, jwt)
 }

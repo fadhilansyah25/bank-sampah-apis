@@ -1,7 +1,8 @@
 package UsersRoute
 
 import (
-	"golang-final-project/Controllers"
+	"golang-final-project/Configs"
+	"golang-final-project/Controllers/UserHandler"
 	"os"
 
 	"github.com/labstack/echo/v4"
@@ -10,12 +11,13 @@ import (
 
 func UsersRouter(route *echo.Group) {
 	jwtSecretKey := os.Getenv("SECRET_JWT")
-
 	jwt := middleware.JWT([]byte(jwtSecretKey))
 
-	route.POST("users", Controllers.UserRegister)
-	route.GET("users", Controllers.GetAllUser, jwt)
-	route.GET("users/:id", Controllers.GetUserByID, jwt)
-	route.PUT("users/:id", Controllers.UpdateUser, jwt)
-	route.DELETE("users/:id", Controllers.DeleteUser, jwt)
+	api := &UserHandler.APIEnv{DB: Configs.DB}
+
+	route.POST("users", api.CreateUser)
+	route.GET("users", api.GetUsers, jwt)
+	route.GET("users/:id", api.GetUser, jwt)
+	route.PUT("users/:id", api.UpdateUser, jwt)
+	route.DELETE("users/:id", api.DeleteUser, jwt)
 }
