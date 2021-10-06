@@ -1,0 +1,55 @@
+name: Running Unit Test, Build Docker Image,  Push To Docker Hub and Deploy To EC2
+
+on:
+  pull_request:
+    branches:
+      - 'main'
+  push: 
+    branches:
+      - 'main'
+
+jobs:
+  unit-test:
+    name: "unit test"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2  
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.17
+
+    # - name: running unitest
+    #   run: |
+    #     echo "${{ secrets.ENV }}" > ./app/config/config.json
+    #     # mv ./app/config/example-config.json ./app/config/config.json
+    #     go mod tidy
+    #     go test ./... -cover -failfast
+
+    - name: running unitest
+      run: go test ./... -cover 
+
+    - name: login docker to docker hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }} 
+        password: ${{ secrets.DOCKER_HUB_PASSWORD }}  
+    
+    - name: docker build golang
+      run: |
+        docker build . -t moryku/kampus_merdeka:1.0.0
+
+    - name: docker push
+      run: |
+        docker push moryku/kampus_merdeka:1.0.0
+
+    # - name: Build, Push and Release a Docker container to Heroku.
+    #   uses: gonuit/heroku-docker-deploy@v1.3.3
+    #   with: 
+    #     email: ${{ secrets.HEROKU_EMAIL }}
+    #     heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+    #     heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+    #     dockerfile_directory: ./
+    #     dockerfile_name: Dockerfile
+    #     docker_options: "--no-cache"
+    #     process_type: web

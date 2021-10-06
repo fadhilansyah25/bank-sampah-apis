@@ -3,26 +3,35 @@ package JenisSampahTest
 import (
 	"bytes"
 	"encoding/json"
-	"golang-final-project/Configs"
+	"golang-final-project/Configs/Database"
 	"golang-final-project/Models/Response"
 	"golang-final-project/Models/Transaction"
 	"io/ioutil"
+	"log"
 	"net/http"
+	"os"
 	"testing"
 
+	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/gorm"
 )
 
 func setupTestDB() *gorm.DB {
-	Configs.Connection(Configs.DBConfig{
-		Host:     "localhost",
-		User:     "root",
-		Password: "",
-		Port:     "3306",
+	errorEnv := godotenv.Load(".env")
+
+	if errorEnv != nil {
+		log.Fatalf("Error loading .env file")
+	}
+
+	Database.Connection(Database.DBConfig{
+		Host:     os.Getenv("DB_HOST"),
+		User:     os.Getenv("DB_USER"),
+		Password: os.Getenv("DB_PASSWORD"),
+		Port:     os.Getenv("DB_PORT"),
 		DBName:   "go_bank_sampah_test",
 	})
-	return Configs.DB
+	return Database.DB
 }
 
 func Test_CreateJenisSampah_OK(t *testing.T) {

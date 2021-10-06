@@ -1,7 +1,7 @@
 package UsersRoute
 
 import (
-	"golang-final-project/Configs"
+	"golang-final-project/Configs/Database"
 	"golang-final-project/Controllers/UserHandler"
 	"os"
 
@@ -13,7 +13,7 @@ func UsersRouter(route *echo.Group) {
 	jwtSecretKey := os.Getenv("SECRET_JWT")
 	jwt := middleware.JWT([]byte(jwtSecretKey))
 
-	api := &UserHandler.APIEnv{DB: Configs.DB}
+	api := &UserHandler.APIEnv{DB: Database.DB}
 
 	route.POST("users", api.CreateUser)
 	route.GET("users", api.GetUsers, jwt)
