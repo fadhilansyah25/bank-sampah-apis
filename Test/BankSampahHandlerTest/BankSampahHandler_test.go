@@ -1,11 +1,11 @@
-package UserHandlerTest
+package BankSampahTest
 
 import (
 	"bytes"
 	"encoding/json"
 	"golang-final-project/Configs"
+	"golang-final-project/Models/BankSampah"
 	"golang-final-project/Models/Response"
-	"golang-final-project/Models/Users"
 	"io/ioutil"
 	"net/http"
 	"testing"
@@ -25,61 +25,30 @@ func setupTestDB() *gorm.DB {
 	return Configs.DB
 }
 
-func Test_GetUsers_OK(t *testing.T) {
+func Test_CreateBankSampah_OK(t *testing.T) {
 	db := setupTestDB()
 
-	// db.Exec("DELETE FROM users WHERE id=(SELECT MAX(id) FROM users)")
-	db.Exec("ALTER TABLE users AUTO_INCREMENT = 1;")
-
-	req, w := setGetUsersRouter(db)
+	// db.Exec("DELETE FROM bank_sampahs WHERE id=(SELECT MAX(id) FROM bank_sampahs)")
+	db.Exec("ALTER TABLE bank_sampahs AUTO_INCREMENT = 1;")
 
 	a := assert.New(t)
-	a.Equal(http.MethodGet, req.Method, "HTTP request method error")
-	a.Equal(http.StatusOK, w.Code, "HTTP request status code error")
+	bankSampah := BankSampah.BankSampah{
+		NamaUsaha:      "CV. Untung Jaya",
+		NamaPemilik:    "Mohammad Wishnu",
+		NIB:            "8809567859670467",
+		NoTelepon:      "089518294758",
+		EmailResmi:     "untung.jaya@gmail.com",
+		Alamat:         "Jl. Kenanga raya No. 10",
+		Kabupaten_Kota: "Bekasi",
+		Provinsi:       "Jawa Barat",
+	}
 
-	body, err := ioutil.ReadAll(w.Body)
+	reqBody, err := json.Marshal(bankSampah)
 	if err != nil {
 		a.Error(err)
 	}
 
-	response := Response.BaseResponse{}
-	if err := json.Unmarshal(body, &response); err != nil {
-		a.Error(err)
-	}
-
-	actual := Response.BaseResponse{
-		Code:    response.Code,
-		Message: response.Message,
-	}
-
-	expected := Response.BaseResponse{
-		Code:    http.StatusOK,
-		Message: "successful retrieve data",
-	}
-	a.Equal(expected, actual)
-}
-
-func Test_CreateUser_OK(t *testing.T) {
-	db := setupTestDB()
-
-	a := assert.New(t)
-	user := Users.User{
-		NamaDepan:      "Mohammed",
-		NamaBelakang:   "Salah",
-		NIK:            "3777098954678908",
-		TanggalLahir:   "1992-10-25",
-		NoTelepon:      "089021425378",
-		Alamat:         "Jl. Melati No.11",
-		Kabupaten_Kota: "Jakarta Timur",
-		Provinsi:       "Jakarta",
-	}
-
-	reqBody, err := json.Marshal(user)
-	if err != nil {
-		a.Error(err)
-	}
-
-	req, w, err := setCreateUserRouter(db, bytes.NewBuffer(reqBody))
+	req, w, err := setCreateBankRouter(db, bytes.NewBuffer(reqBody))
 	if err != nil {
 		a.Error(err)
 	}
@@ -109,27 +78,58 @@ func Test_CreateUser_OK(t *testing.T) {
 	a.Equal(expected, actual)
 }
 
-func Test_UpdateUser_OK(t *testing.T) {
+func Test_GetBankSampah_OK(t *testing.T) {
 	db := setupTestDB()
 
-	a := assert.New(t)
-	user := Users.User{
-		NamaDepan:      "Mohammed",
-		NamaBelakang:   "Salah",
-		NIK:            "3777098954678908",
-		TanggalLahir:   "1992-10-25",
-		NoTelepon:      "089021425378",
-		Alamat:         "Jl. Melati No.11 Kp. Babakan",
-		Kabupaten_Kota: "Jakarta Timur",
-		Provinsi:       "Jakarta",
-	}
+	req, w := setGetBankSampahRouter(db)
 
-	reqBody, err := json.Marshal(user)
+	a := assert.New(t)
+	a.Equal(http.MethodGet, req.Method, "HTTP request method error")
+	a.Equal(http.StatusOK, w.Code, "HTTP request status code error")
+
+	body, err := ioutil.ReadAll(w.Body)
 	if err != nil {
 		a.Error(err)
 	}
 
-	req, w, err := setUpdateUserRouter(db, bytes.NewBuffer(reqBody))
+	response := Response.BaseResponse{}
+	if err := json.Unmarshal(body, &response); err != nil {
+		a.Error(err)
+	}
+
+	actual := Response.BaseResponse{
+		Code:    response.Code,
+		Message: response.Message,
+	}
+
+	expected := Response.BaseResponse{
+		Code:    http.StatusOK,
+		Message: "successful retrieve data",
+	}
+	a.Equal(expected, actual)
+}
+
+func Test_UpdateUser_OK(t *testing.T) {
+	db := setupTestDB()
+
+	a := assert.New(t)
+	bankSampah := BankSampah.BankSampah{
+		NamaUsaha:      "CV. Untung Jaya Bersama",
+		NamaPemilik:    "Mohammad Wishnu Karmin",
+		NIB:            "8809567859670467",
+		NoTelepon:      "089518294758",
+		EmailResmi:     "untung.jaya@gmail.com",
+		Alamat:         "Jl. Kenanga raya No. 10, Kp. Babakan",
+		Kabupaten_Kota: "Bekasi",
+		Provinsi:       "Jawa Barat",
+	}
+
+	reqBody, err := json.Marshal(bankSampah)
+	if err != nil {
+		a.Error(err)
+	}
+
+	req, w, err := setUpdateBankSampahRouter(db, bytes.NewBuffer(reqBody))
 	if err != nil {
 		a.Error(err)
 	}
@@ -159,12 +159,12 @@ func Test_UpdateUser_OK(t *testing.T) {
 	a.Equal(expected, actual)
 }
 
-func Test_DeleteUser_OK(t *testing.T) {
+func Test_DeleteBankSampah_OK(t *testing.T) {
 	db := setupTestDB()
 
 	a := assert.New(t)
 
-	req, w, err := setDeleteUserRouter(db)
+	req, w, err := setDeleteBankSampahRouter(db)
 	if err != nil {
 		a.Error(err)
 	}
@@ -192,6 +192,4 @@ func Test_DeleteUser_OK(t *testing.T) {
 		Message: "successful delete data",
 	}
 	a.Equal(expected, actual)
-
-	db.Exec("ALTER TABLE users AUTO_INCREMENT = 1;")
 }

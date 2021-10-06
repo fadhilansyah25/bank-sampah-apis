@@ -9,6 +9,7 @@ import (
 	"golang-final-project/Models/Response"
 	"golang-final-project/Models/UserLogins"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
@@ -59,7 +60,7 @@ func (a *APIEnv) CreateUserLogin(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
 			Code:    http.StatusInternalServerError,
-			Message: "Failed create data to database",
+			Message: "failed create data to database",
 			Data:    nil,
 		})
 	}
@@ -97,7 +98,7 @@ func (a *APIEnv) Login(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
 			Code:    http.StatusInternalServerError,
-			Message: "Cannot retrieve data from database",
+			Message: "cannot retrieve data from database",
 			Data:    nil,
 		})
 	}
@@ -169,8 +170,16 @@ func (a *APIEnv) GetAlluserLogin(c echo.Context) error {
 
 // get user login by id handler ...
 func (a *APIEnv) GetUserLoginByID(c echo.Context) error {
-	id := c.Param("id")
-	user, exists, err := UserLoginDriver.GetUserLoginByID(id, a.DB)
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusUnprocessableEntity, Response.BaseResponse{
+			Code:    http.StatusUnprocessableEntity,
+			Message: "path parameter invalid",
+			Data:    nil,
+		})
+	}
+
+	user, exists, err := UserLoginDriver.GetUserLoginByID(fmt.Sprint(id), a.DB)
 	if err != nil {
 		fmt.Println(err)
 		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
@@ -196,8 +205,16 @@ func (a *APIEnv) GetUserLoginByID(c echo.Context) error {
 }
 
 func (a *APIEnv) UpdateUserLogin(c echo.Context) error {
-	id := c.Param("id")
-	userlogin, exists, err := UserLoginDriver.GetUserLoginByID(id, a.DB)
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusUnprocessableEntity, Response.BaseResponse{
+			Code:    http.StatusUnprocessableEntity,
+			Message: "path parameter invalid",
+			Data:    nil,
+		})
+	}
+
+	userlogin, exists, err := UserLoginDriver.GetUserLoginByID(fmt.Sprint(id), a.DB)
 	if err != nil {
 		fmt.Println(err)
 		return c.JSON(http.StatusUnprocessableEntity, Response.BaseResponse{

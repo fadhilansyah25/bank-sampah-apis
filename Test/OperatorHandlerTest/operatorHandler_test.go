@@ -1,11 +1,11 @@
-package UserHandlerTest
+package OperatorHandlerTest
 
 import (
 	"bytes"
 	"encoding/json"
 	"golang-final-project/Configs"
+	"golang-final-project/Models/BankSampah"
 	"golang-final-project/Models/Response"
-	"golang-final-project/Models/Users"
 	"io/ioutil"
 	"net/http"
 	"testing"
@@ -25,61 +25,31 @@ func setupTestDB() *gorm.DB {
 	return Configs.DB
 }
 
-func Test_GetUsers_OK(t *testing.T) {
+func Test_CreateOperator_OK(t *testing.T) {
 	db := setupTestDB()
 
-	// db.Exec("DELETE FROM users WHERE id=(SELECT MAX(id) FROM users)")
-	db.Exec("ALTER TABLE users AUTO_INCREMENT = 1;")
-
-	req, w := setGetUsersRouter(db)
+	// db.Exec("DELETE FROM operator_sampahs WHERE id=(SELECT MAX(id) FROM operator_sampahs)")
+	db.Exec("ALTER TABLE operator_sampahs AUTO_INCREMENT = 1;")
 
 	a := assert.New(t)
-	a.Equal(http.MethodGet, req.Method, "HTTP request method error")
-	a.Equal(http.StatusOK, w.Code, "HTTP request status code error")
+	operator := BankSampah.OperatorSampah{
+		NIK:            "801929938847799293",
+		BankSampahId:   1,
+		NamaDepan:      "Bambang",
+		NamaBelakang:   "Rianto",
+		TanggalLahir:   "1983-02-03",
+		NoTelepon:      "0897761627839",
+		Alamat:         "Jl. Lestari Bersama 4, No. 102 Kp. Angke",
+		Kabupaten_Kota: "Jakarta Utara",
+		Provinsi:       "DKI Jakarta",
+	}
 
-	body, err := ioutil.ReadAll(w.Body)
+	reqBody, err := json.Marshal(operator)
 	if err != nil {
 		a.Error(err)
 	}
 
-	response := Response.BaseResponse{}
-	if err := json.Unmarshal(body, &response); err != nil {
-		a.Error(err)
-	}
-
-	actual := Response.BaseResponse{
-		Code:    response.Code,
-		Message: response.Message,
-	}
-
-	expected := Response.BaseResponse{
-		Code:    http.StatusOK,
-		Message: "successful retrieve data",
-	}
-	a.Equal(expected, actual)
-}
-
-func Test_CreateUser_OK(t *testing.T) {
-	db := setupTestDB()
-
-	a := assert.New(t)
-	user := Users.User{
-		NamaDepan:      "Mohammed",
-		NamaBelakang:   "Salah",
-		NIK:            "3777098954678908",
-		TanggalLahir:   "1992-10-25",
-		NoTelepon:      "089021425378",
-		Alamat:         "Jl. Melati No.11",
-		Kabupaten_Kota: "Jakarta Timur",
-		Provinsi:       "Jakarta",
-	}
-
-	reqBody, err := json.Marshal(user)
-	if err != nil {
-		a.Error(err)
-	}
-
-	req, w, err := setCreateUserRouter(db, bytes.NewBuffer(reqBody))
+	req, w, err := setCreateOperatorRouter(db, bytes.NewBuffer(reqBody))
 	if err != nil {
 		a.Error(err)
 	}
@@ -109,27 +79,59 @@ func Test_CreateUser_OK(t *testing.T) {
 	a.Equal(expected, actual)
 }
 
-func Test_UpdateUser_OK(t *testing.T) {
+func Test_GetOperators_OK(t *testing.T) {
 	db := setupTestDB()
 
-	a := assert.New(t)
-	user := Users.User{
-		NamaDepan:      "Mohammed",
-		NamaBelakang:   "Salah",
-		NIK:            "3777098954678908",
-		TanggalLahir:   "1992-10-25",
-		NoTelepon:      "089021425378",
-		Alamat:         "Jl. Melati No.11 Kp. Babakan",
-		Kabupaten_Kota: "Jakarta Timur",
-		Provinsi:       "Jakarta",
-	}
+	req, w := setGetOperatorsRouter(db)
 
-	reqBody, err := json.Marshal(user)
+	a := assert.New(t)
+	a.Equal(http.MethodGet, req.Method, "HTTP request method error")
+	a.Equal(http.StatusOK, w.Code, "HTTP request status code error")
+
+	body, err := ioutil.ReadAll(w.Body)
 	if err != nil {
 		a.Error(err)
 	}
 
-	req, w, err := setUpdateUserRouter(db, bytes.NewBuffer(reqBody))
+	response := Response.BaseResponse{}
+	if err := json.Unmarshal(body, &response); err != nil {
+		a.Error(err)
+	}
+
+	actual := Response.BaseResponse{
+		Code:    response.Code,
+		Message: response.Message,
+	}
+
+	expected := Response.BaseResponse{
+		Code:    http.StatusOK,
+		Message: "successful retrieve data",
+	}
+	a.Equal(expected, actual)
+}
+
+func Test_UpdateOperator_OK(t *testing.T) {
+	db := setupTestDB()
+
+	a := assert.New(t)
+	operator := BankSampah.OperatorSampah{
+		NIK:            "801929938847799293",
+		BankSampahId:   1,
+		NamaDepan:      "Bambang",
+		NamaBelakang:   "Pamungkas",
+		TanggalLahir:   "1983-02-03",
+		NoTelepon:      "0897761627839",
+		Alamat:         "Jl. Lestari segar 4, No. 102 Kp. Angke",
+		Kabupaten_Kota: "Jakarta Utara",
+		Provinsi:       "DKI Jakarta",
+	}
+
+	reqBody, err := json.Marshal(operator)
+	if err != nil {
+		a.Error(err)
+	}
+
+	req, w, err := setUpdateOperatorRouter(db, bytes.NewBuffer(reqBody))
 	if err != nil {
 		a.Error(err)
 	}
@@ -159,12 +161,12 @@ func Test_UpdateUser_OK(t *testing.T) {
 	a.Equal(expected, actual)
 }
 
-func Test_DeleteUser_OK(t *testing.T) {
+func Test_DeleteOperator_OK(t *testing.T) {
 	db := setupTestDB()
 
 	a := assert.New(t)
 
-	req, w, err := setDeleteUserRouter(db)
+	req, w, err := setDeleteOperatorRouter(db)
 	if err != nil {
 		a.Error(err)
 	}
@@ -192,6 +194,4 @@ func Test_DeleteUser_OK(t *testing.T) {
 		Message: "successful delete data",
 	}
 	a.Equal(expected, actual)
-
-	db.Exec("ALTER TABLE users AUTO_INCREMENT = 1;")
 }

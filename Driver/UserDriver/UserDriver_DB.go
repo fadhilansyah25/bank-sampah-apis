@@ -47,7 +47,6 @@ func DeleteUser(id string, db *gorm.DB) error {
 }
 
 func UpdateUser(db *gorm.DB, u *Users.User, id string) error {
-
 	if err := db.Model(Users.User{}).Where("id = ?", id).Updates(u).Error; err != nil {
 		return err
 	}

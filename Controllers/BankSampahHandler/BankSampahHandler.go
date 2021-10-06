@@ -1,10 +1,10 @@
-package UserHandler
+package BankSampahHandler
 
 import (
 	"fmt"
-	"golang-final-project/Driver/UserDriver"
+	"golang-final-project/Driver/BankSampahDriver"
+	"golang-final-project/Models/BankSampah"
 	"golang-final-project/Models/Response"
-	"golang-final-project/Models/Users"
 	"net/http"
 	"strconv"
 
@@ -16,8 +16,31 @@ type APIEnv struct {
 	DB *gorm.DB
 }
 
-func (a *APIEnv) GetUsers(c echo.Context) error {
-	users, err := UserDriver.GetAllUsers(a.DB)
+// Register Bank Sampah
+func (a *APIEnv) BankSampahRegister(c echo.Context) error {
+	var bankSampah BankSampah.BankSampah
+	c.Bind(&bankSampah)
+
+	err := BankSampahDriver.CreateBankSampah(a.DB, &bankSampah)
+	if err != nil {
+		fmt.Println(err)
+		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
+			Code:    http.StatusInternalServerError,
+			Message: "error save data to database",
+			Data:    nil,
+		})
+	}
+
+	return c.JSON(http.StatusCreated, Response.BaseResponse{
+		Code:    http.StatusCreated,
+		Message: "successful create data",
+		Data:    &bankSampah,
+	})
+}
+
+// Get All Bank Sampah Data
+func (a *APIEnv) GetAllBankSampah(c echo.Context) error {
+	bankSampah, err := BankSampahDriver.GetAllBankSampah(a.DB)
 	if err != nil {
 		fmt.Println(err)
 		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
@@ -30,21 +53,22 @@ func (a *APIEnv) GetUsers(c echo.Context) error {
 	return c.JSON(http.StatusOK, Response.BaseResponse{
 		Code:    http.StatusOK,
 		Message: "successful retrieve data",
-		Data:    &users,
+		Data:    &bankSampah,
 	})
 }
 
-func (a *APIEnv) GetUser(c echo.Context) error {
+// Get Bank Sampah by ID
+func (a *APIEnv) GetBankSampahById(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, Response.BaseResponse{
 			Code:    http.StatusUnprocessableEntity,
-			Message: "Path parameter invalid",
+			Message: "path parameter invalid",
 			Data:    nil,
 		})
 	}
 
-	user, exists, err := UserDriver.GetUserByID(fmt.Sprint(id), a.DB)
+	bankSampah, exists, err := BankSampahDriver.GetBankSampahByID(fmt.Sprint(id), a.DB)
 	if err != nil {
 		fmt.Println(err)
 		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
@@ -65,48 +89,67 @@ func (a *APIEnv) GetUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, Response.BaseResponse{
 		Code:    http.StatusOK,
 		Message: "successful retrieve data",
-		Data:    &user,
+		Data:    &bankSampah,
 	})
 }
 
-func (a *APIEnv) CreateUser(c echo.Context) error {
-	user := Users.User{}
-	err := c.Bind(&user)
-	if err != nil {
-		fmt.Println(err)
-		return c.JSON(http.StatusUnprocessableEntity, Response.BaseResponse{
-			Code:    http.StatusUnprocessableEntity,
-			Message: "error process header",
-			Data:    nil,
-		})
-	}
-
-	if err := UserDriver.CreateUser(a.DB, &user); err != nil {
-		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
-			Code:    http.StatusInternalServerError,
-			Message: "error save data to database",
-			Data:    nil,
-		})
-	}
-
-	return c.JSON(http.StatusCreated, Response.BaseResponse{
-		Code:    http.StatusCreated,
-		Message: "successful create data",
-		Data:    &user,
-	})
-}
-
-func (a *APIEnv) DeleteUser(c echo.Context) error {
+// Update Bank Sampah
+func (a *APIEnv) UpdateBankSampah(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, Response.BaseResponse{
 			Code:    http.StatusUnprocessableEntity,
-			Message: "Path parameter invalid",
+			Message: "path parameter invalid",
 			Data:    nil,
 		})
 	}
 
-	_, exists, err := UserDriver.GetUserByID(fmt.Sprint(id), a.DB)
+	bankSampah, exists, err := BankSampahDriver.GetBankSampahByID(fmt.Sprint(id), a.DB)
+	if err != nil {
+		fmt.Println(err)
+		return c.JSON(http.StatusNotAcceptable, Response.BaseResponse{
+			Code:    http.StatusNotAcceptable,
+			Message: "data not found",
+			Data:    nil,
+		})
+	}
+
+	if !exists {
+		return c.JSON(http.StatusNotFound, Response.BaseResponse{
+			Code:    http.StatusNotFound,
+			Message: "record not exist",
+			Data:    nil,
+		})
+	}
+
+	c.Bind(&bankSampah)
+	if err := BankSampahDriver.UpdateBankSampah(a.DB, &bankSampah, fmt.Sprint(id)); err != nil {
+		fmt.Println(err)
+		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
+			Code:    http.StatusInternalServerError,
+			Message: "cannot update data to database",
+			Data:    nil,
+		})
+	}
+
+	return c.JSON(http.StatusAccepted, Response.BaseResponse{
+		Code:    http.StatusAccepted,
+		Message: "successful update data",
+		Data:    &bankSampah,
+	})
+}
+
+func (a *APIEnv) DeleteBankSampah(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusUnprocessableEntity, Response.BaseResponse{
+			Code:    http.StatusUnprocessableEntity,
+			Message: "path parameter invalid",
+			Data:    nil,
+		})
+	}
+
+	_, exists, err := BankSampahDriver.GetBankSampahByID(fmt.Sprint(id), a.DB)
 	if err != nil {
 		fmt.Println(err)
 		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
@@ -124,7 +167,7 @@ func (a *APIEnv) DeleteUser(c echo.Context) error {
 		})
 	}
 
-	err = UserDriver.DeleteUser(fmt.Sprint(id), a.DB)
+	err = BankSampahDriver.DeleteBankSampah(fmt.Sprint(id), a.DB)
 	if err != nil {
 		fmt.Println(err)
 		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
@@ -138,59 +181,5 @@ func (a *APIEnv) DeleteUser(c echo.Context) error {
 		Code:    http.StatusAccepted,
 		Message: "successful delete data",
 		Data:    nil,
-	})
-}
-
-func (a *APIEnv) UpdateUser(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		return c.JSON(http.StatusUnprocessableEntity, Response.BaseResponse{
-			Code:    http.StatusUnprocessableEntity,
-			Message: "Path parameter invalid",
-			Data:    nil,
-		})
-	}
-
-	user, exists, err := UserDriver.GetUserByID(fmt.Sprint(id), a.DB)
-	if err != nil {
-		fmt.Println(err)
-		return c.JSON(http.StatusUnprocessableEntity, Response.BaseResponse{
-			Code:    http.StatusUnprocessableEntity,
-			Message: "path parameter invalid",
-			Data:    nil,
-		})
-	}
-
-	if !exists {
-		return c.JSON(http.StatusNotFound, Response.BaseResponse{
-			Code:    http.StatusNotFound,
-			Message: "record not exist",
-			Data:    nil,
-		})
-	}
-
-	err = c.Bind(&user)
-	if err != nil {
-		fmt.Println(err)
-		return c.JSON(http.StatusUnprocessableEntity, Response.BaseResponse{
-			Code:    http.StatusUnprocessableEntity,
-			Message: "cannot process data",
-			Data:    nil,
-		})
-	}
-
-	if err := UserDriver.UpdateUser(a.DB, &user, fmt.Sprint(id)); err != nil {
-		fmt.Println(err)
-		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
-			Code:    http.StatusInternalServerError,
-			Message: "cannot update data to database",
-			Data:    nil,
-		})
-	}
-
-	return c.JSON(http.StatusAccepted, Response.BaseResponse{
-		Code:    http.StatusAccepted,
-		Message: "successful update data",
-		Data:    user,
 	})
 }
