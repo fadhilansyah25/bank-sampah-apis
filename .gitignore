@@ -16,4 +16,4 @@
 .env
 tmp/**
 
-shell/*
+ShellCommand/*
