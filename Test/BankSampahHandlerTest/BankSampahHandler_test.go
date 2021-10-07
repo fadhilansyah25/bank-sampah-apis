@@ -3,30 +3,18 @@ package BankSampahTest
 import (
 	"bytes"
 	"encoding/json"
-	"golang-final-project/Configs"
 	"golang-final-project/Models/BankSampah"
 	"golang-final-project/Models/Response"
+	"golang-final-project/Test"
 	"io/ioutil"
 	"net/http"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"gorm.io/gorm"
 )
 
-func setupTestDB() *gorm.DB {
-	Configs.Connection(Configs.DBConfig{
-		Host:     "localhost",
-		User:     "root",
-		Password: "",
-		Port:     "3306",
-		DBName:   "go_bank_sampah_test",
-	})
-	return Configs.DB
-}
-
 func Test_CreateBankSampah_OK(t *testing.T) {
-	db := setupTestDB()
+	db := Test.SetUpTestDB()
 
 	// db.Exec("DELETE FROM bank_sampahs WHERE id=(SELECT MAX(id) FROM bank_sampahs)")
 	db.Exec("ALTER TABLE bank_sampahs AUTO_INCREMENT = 1;")
@@ -79,7 +67,7 @@ func Test_CreateBankSampah_OK(t *testing.T) {
 }
 
 func Test_GetBankSampah_OK(t *testing.T) {
-	db := setupTestDB()
+	db := Test.SetUpTestDB()
 
 	req, w := setGetBankSampahRouter(db)
 
@@ -110,7 +98,7 @@ func Test_GetBankSampah_OK(t *testing.T) {
 }
 
 func Test_UpdateUser_OK(t *testing.T) {
-	db := setupTestDB()
+	db := Test.SetUpTestDB()
 
 	a := assert.New(t)
 	bankSampah := BankSampah.BankSampah{
@@ -160,7 +148,7 @@ func Test_UpdateUser_OK(t *testing.T) {
 }
 
 func Test_DeleteBankSampah_OK(t *testing.T) {
-	db := setupTestDB()
+	db := Test.SetUpTestDB()
 
 	a := assert.New(t)
 

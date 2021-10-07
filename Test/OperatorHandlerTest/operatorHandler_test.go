@@ -3,30 +3,18 @@ package OperatorHandlerTest
 import (
 	"bytes"
 	"encoding/json"
-	"golang-final-project/Configs"
 	"golang-final-project/Models/BankSampah"
 	"golang-final-project/Models/Response"
+	"golang-final-project/Test"
 	"io/ioutil"
 	"net/http"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"gorm.io/gorm"
 )
 
-func setupTestDB() *gorm.DB {
-	Configs.Connection(Configs.DBConfig{
-		Host:     "localhost",
-		User:     "root",
-		Password: "",
-		Port:     "3306",
-		DBName:   "go_bank_sampah_test",
-	})
-	return Configs.DB
-}
-
 func Test_CreateOperator_OK(t *testing.T) {
-	db := setupTestDB()
+	db := Test.SetUpTestDB()
 
 	// db.Exec("DELETE FROM operator_sampahs WHERE id=(SELECT MAX(id) FROM operator_sampahs)")
 	db.Exec("ALTER TABLE operator_sampahs AUTO_INCREMENT = 1;")
@@ -80,7 +68,7 @@ func Test_CreateOperator_OK(t *testing.T) {
 }
 
 func Test_GetOperators_OK(t *testing.T) {
-	db := setupTestDB()
+	db := Test.SetUpTestDB()
 
 	req, w := setGetOperatorsRouter(db)
 
@@ -111,7 +99,7 @@ func Test_GetOperators_OK(t *testing.T) {
 }
 
 func Test_UpdateOperator_OK(t *testing.T) {
-	db := setupTestDB()
+	db := Test.SetUpTestDB()
 
 	a := assert.New(t)
 	operator := BankSampah.OperatorSampah{
@@ -162,7 +150,7 @@ func Test_UpdateOperator_OK(t *testing.T) {
 }
 
 func Test_DeleteOperator_OK(t *testing.T) {
-	db := setupTestDB()
+	db := Test.SetUpTestDB()
 
 	a := assert.New(t)
 

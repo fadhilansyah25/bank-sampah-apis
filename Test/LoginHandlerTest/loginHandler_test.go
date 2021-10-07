@@ -3,30 +3,18 @@ package LoginHandlerTest
 import (
 	"bytes"
 	"encoding/json"
-	"golang-final-project/Configs"
 	"golang-final-project/Models/Response"
 	"golang-final-project/Models/UserLogins"
+	"golang-final-project/Test"
 	"io/ioutil"
 	"net/http"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"gorm.io/gorm"
 )
 
-func setupTestDB() *gorm.DB {
-	Configs.Connection(Configs.DBConfig{
-		Host:     "localhost",
-		User:     "root",
-		Password: "",
-		Port:     "3306",
-		DBName:   "go_bank_sampah_test",
-	})
-	return Configs.DB
-}
-
 func Test_CreateUserLogin_OK(t *testing.T) {
-	db := setupTestDB()
+	db := Test.SetUpTestDB()
 
 	db.Exec("DELETE FROM login_data_users;")
 	db.Exec("ALTER TABLE login_data_users AUTO_INCREMENT = 1;")
@@ -76,7 +64,7 @@ func Test_CreateUserLogin_OK(t *testing.T) {
 }
 
 func Test_Login_OK(t *testing.T) {
-	db := setupTestDB()
+	db := Test.SetUpTestDB()
 
 	a := assert.New(t)
 	login := UserLogins.Login{
@@ -121,7 +109,7 @@ func Test_Login_OK(t *testing.T) {
 }
 
 func Test_UpdateLogin_OK(t *testing.T) {
-	db := setupTestDB()
+	db := Test.SetUpTestDB()
 
 	a := assert.New(t)
 	userLogin := UserLogins.LoginDataUsers{
@@ -167,7 +155,7 @@ func Test_UpdateLogin_OK(t *testing.T) {
 }
 
 func Test_GetUserLoginByID_OK(t *testing.T) {
-	db := setupTestDB()
+	db := Test.SetUpTestDB()
 
 	a := assert.New(t)
 

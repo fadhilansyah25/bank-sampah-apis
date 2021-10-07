@@ -3,30 +3,18 @@ package UserHandlerTest
 import (
 	"bytes"
 	"encoding/json"
-	"golang-final-project/Configs"
 	"golang-final-project/Models/Response"
 	"golang-final-project/Models/Users"
+	"golang-final-project/Test"
 	"io/ioutil"
 	"net/http"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"gorm.io/gorm"
 )
 
-func setupTestDB() *gorm.DB {
-	Configs.Connection(Configs.DBConfig{
-		Host:     "localhost",
-		User:     "root",
-		Password: "",
-		Port:     "3306",
-		DBName:   "go_bank_sampah_test",
-	})
-	return Configs.DB
-}
-
 func Test_GetUsers_OK(t *testing.T) {
-	db := setupTestDB()
+	db := Test.SetUpTestDB()
 
 	// db.Exec("DELETE FROM users WHERE id=(SELECT MAX(id) FROM users)")
 	db.Exec("ALTER TABLE users AUTO_INCREMENT = 1;")
@@ -60,7 +48,7 @@ func Test_GetUsers_OK(t *testing.T) {
 }
 
 func Test_CreateUser_OK(t *testing.T) {
-	db := setupTestDB()
+	db := Test.SetUpTestDB()
 
 	a := assert.New(t)
 	user := Users.User{
@@ -110,7 +98,7 @@ func Test_CreateUser_OK(t *testing.T) {
 }
 
 func Test_UpdateUser_OK(t *testing.T) {
-	db := setupTestDB()
+	db := Test.SetUpTestDB()
 
 	a := assert.New(t)
 	user := Users.User{
@@ -160,7 +148,7 @@ func Test_UpdateUser_OK(t *testing.T) {
 }
 
 func Test_DeleteUser_OK(t *testing.T) {
-	db := setupTestDB()
+	db := Test.SetUpTestDB()
 
 	a := assert.New(t)
 

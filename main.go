@@ -1,30 +1,28 @@
 package main
 
 import (
-	"golang-final-project/Configs"
+	"golang-final-project/Configs/Database"
 	"golang-final-project/Routes"
-	"log"
 	"os"
-
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	errorEnv := godotenv.Load(".env")
+	var db Database.DBConfig
 
-	if errorEnv != nil {
-		log.Fatalf("Error loading .env file")
-	}
+	// errorEnv := godotenv.Load(".env")
 
-	var dbConf Configs.DBConfig
+	// if errorEnv != nil {
+	// 	log.Fatalf("Error loading .env file")
+	// }
 
-	dbConf.Host = os.Getenv("DB_HOST")
-	dbConf.Port = os.Getenv("DB_PORT")
-	dbConf.User = os.Getenv("DB_USER")
-	dbConf.Password = os.Getenv("DB_PASSWORD")
-	dbConf.DBName = os.Getenv("DB_NAME")
+	db.Host = os.Getenv("DB_HOST")
+	db.Port = os.Getenv("DB_PORT")
+	db.User = os.Getenv("DB_USER")
+	db.Password = os.Getenv("DB_PASSWORD")
+	db.DBName = os.Getenv("DB_NAME")
 
-	Configs.Connection(dbConf)
+	Database.Connection(db)
 	e := Routes.RouteVersion1()
-	e.Start(":8080")
+
+	e.Start("8080:8080")
 }

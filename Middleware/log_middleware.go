@@ -50,9 +50,9 @@ func connect() (*mongo.Database, error) {
 		log.Fatalf("Error loading .env file")
 	}
 
-	host := os.Getenv("DB_MONGO_HOST")
-	port := os.Getenv("DB_MONGO_PORT")
-	mongoUri := fmt.Sprintf("mongodb://%s:%s", host, port)
+	username := os.Getenv("DB_MONGO_USERNAME")
+	password := os.Getenv("DB_MONGO_PASSWORD")
+	mongoUri := fmt.Sprintf("mongodb+srv://%s:%s@cluster0.u1fn4.mongodb.net/bank_sampah?retryWrites=true&w=majority", username, password)
 
 	clientOptions := options.Client()
 	clientOptions.ApplyURI(mongoUri)
