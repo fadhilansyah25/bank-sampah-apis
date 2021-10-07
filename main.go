@@ -24,5 +24,5 @@ func main() {
 	Database.Connection(db)
 	e := Routes.RouteVersion1()
 
-	e.Start("8080:8080")
+	e.Start(":" + os.Getenv("PORT"))
 }
