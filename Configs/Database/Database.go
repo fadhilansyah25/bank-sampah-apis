@@ -3,7 +3,7 @@ package Database
 import (
 	"fmt"
 
-	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
@@ -19,19 +19,41 @@ type DBConfig struct {
 	Password string
 }
 
+// // mysql
+// func (dbConfig *DBConfig) DbURLMain() string {
+// 	return fmt.Sprintf(
+// 		"%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
+// 		dbConfig.User,
+// 		dbConfig.Password,
+// 		dbConfig.Host,
+// 		dbConfig.Port,
+// 		dbConfig.DBName,
+// 	)
+// }
+
+// func Connection(dsn DBConfig) {
+// 	DB, err = gorm.Open(mysql.Open(dsn.DbURLMain()), &gorm.Config{})
+
+// 	if err != nil {
+// 		fmt.Println("Status:", err)
+// 	}
+// 	Migrate()
+// }
+
+// postgresSQL
 func (dbConfig *DBConfig) DbURLMain() string {
 	return fmt.Sprintf(
-		"%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
+		"host=%s user=%s password=%s dbname=%s port=%s sslmode=enable TimeZone=Asia/Jakarta ",
+		dbConfig.Host,
 		dbConfig.User,
 		dbConfig.Password,
-		dbConfig.Host,
-		dbConfig.Port,
 		dbConfig.DBName,
+		dbConfig.Port,
 	)
 }
 
 func Connection(dsn DBConfig) {
-	DB, err = gorm.Open(mysql.Open(dsn.DbURLMain()), &gorm.Config{})
+	DB, err = gorm.Open(postgres.Open(dsn.DbURLMain()), &gorm.Config{})
 
 	if err != nil {
 		fmt.Println("Status:", err)
