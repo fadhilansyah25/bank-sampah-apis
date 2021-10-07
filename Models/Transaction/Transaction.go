@@ -21,11 +21,10 @@ type Transaction struct {
 }
 
 type DetailTransaction struct {
-	TransactionID   uint    `gorm:"Not Null; PrimaryKey; autoIncrement:false; ForeignKey; constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"transactionId"`
-	JenisSampahId   uint    `gorm:"Not Null; PrimaryKey; autoIncrement:false" json:"jenisSampahId"`
-	Qty             int     `gorm:"size:10; not null" json:"qty"`
-	TotalPrice      float32 `gorm:"type:decimal(13,2)" json:"totalPrice"`
-	TransactionType string
+	TransactionID uint    `gorm:"Not Null; PrimaryKey; autoIncrement:false; ForeignKey; constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"transactionId"`
+	JenisSampahId uint    `gorm:"Not Null; PrimaryKey; autoIncrement:false" json:"jenisSampahId"`
+	Qty           int     `gorm:"size:10; not null" json:"qty"`
+	TotalPrice    float32 `gorm:"type:decimal(13,2)" json:"totalPrice"`
 }
 
 type TransactionReq struct {
