@@ -14,8 +14,8 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: 1.17
-    - name: Test
-      run: go test -v ./...
+    # - name: Test
+    #   run: go test -v ./...
     - name: docker login
       env:
         DOCKER_USER: ${{ secrets.DOCKER_HUB_USERNAME }} 
@@ -25,10 +25,10 @@ jobs:
     
     - name: docker build golang
       run: |
-        docker build . -t fadhilansyah25/golang-final-project:latest
+        docker build . -t fadhilansyah25/golang-final-project:1.0.0
     - name: docker push
       run: |
-        docker fadhilansyah25/golang-final-project:latest
+        docker push fadhilansyah25/golang-final-project:1.0.0
     - name: Build, Push and Release a Docker container to Heroku.
       uses: gonuit/heroku-docker-deploy@v1.3.3
       with: 

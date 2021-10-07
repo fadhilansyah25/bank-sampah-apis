@@ -1,37 +1,37 @@
 version: '3'
 services:
-  mysql:
-    image: mysql
-    container_name: db_mysql
-    restart: always
-    ports: 
-      - 3306:3306
-    environment: 
-        MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-        MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
-        # MYSQL_USER: "${DB_USER}"
-        MYSQL_PASSWORD: "${DB_PASSWORD}"
-        MYSQL_DATABASE: "${DB_NAME}"
-    volumes:
-      - database_mysql:/var/lib/mysql
-    networks:
-      - fullstack
+  # mysql:
+  #   image: mysql
+  #   container_name: db_mysql
+  #   restart: always
+  #   ports: 
+  #     - 3306:3306
+  #   environment: 
+  #       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+  #       MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+  #       # MYSQL_USER: "${DB_USER}"
+  #       MYSQL_PASSWORD: "${DB_PASSWORD}"
+  #       MYSQL_DATABASE: "${DB_NAME}"
+  #   volumes:
+  #     - database_mysql:/var/lib/mysql
+  #   networks:
+  #     - fullstack
 
   
-  mongodb:
-    image: mongo
-    container_name: db_mongo
-    restart: always
-    ports:
-      - 27017:27017
-    environment:
-      - MONGO_INITDB_DATABASE=bank_sampah
-      - MONGO_INITDB_ROOT_USERNAME=
-      - MONGO_INITDB_ROOT_PASSWORD=
-    volumes:
-      - database_mongo:/data/db
-    networks:
-      - fullstack
+  # mongodb:
+  #   image: mongo
+  #   container_name: db_mongo
+  #   restart: always
+  #   ports:
+  #     - 27017:27017
+  #   environment:
+  #     - MONGO_INITDB_DATABASE=bank_sampah
+  #     - MONGO_INITDB_ROOT_USERNAME=
+  #     - MONGO_INITDB_ROOT_PASSWORD=
+  #   volumes:
+  #     - database_mongo:/data/db
+  #   networks:
+  #     - fullstack
 
   app:
     container_name: bank_sampah
@@ -40,21 +40,21 @@ services:
       - 8080:8080 
     volumes:
       - api:/usr/src/app/
-    depends_on:
-      - mysql
-      - mongodb
-    networks:
-      - fullstack
+    # depends_on:
+    #   - mysql
+    #   - mongodb
+    # networks:
+    #   - fullstack
     restart: on-failure
-    command: sh -c './wait-for.sh mysql:3306 -- ./main'
+    # command: sh -c './wait-for.sh mysql:3306 -- ./main'
 
 
 volumes:
   api:
-  database_mysql:
-  database_mongo:                  
+  # database_mysql:
+  # database_mongo:                  
 
 # Networks to be created to facilitate communication between containers
-networks:
-  fullstack:
-    driver: bridge
+# networks:
+#   fullstack:
+#     driver: bridge
