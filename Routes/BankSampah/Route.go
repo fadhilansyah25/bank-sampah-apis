@@ -1,7 +1,7 @@
 package BankSampahRoute
 
 import (
-	"golang-final-project/Configs"
+	"golang-final-project/Configs/Database"
 	"golang-final-project/Controllers/BankSampahHandler"
 	"os"
 
@@ -13,7 +13,7 @@ func BankSampahRouter(route *echo.Group) {
 	jwtSecretKey := os.Getenv("SECRET_JWT")
 	jwt := middleware.JWT([]byte(jwtSecretKey))
 
-	api := BankSampahHandler.APIEnv{DB: Configs.DB}
+	api := BankSampahHandler.APIEnv{DB: Database.DB}
 
 	route.POST("bank-sampah", api.BankSampahRegister, jwt)
 	route.GET("bank-sampah", api.GetAllBankSampah, jwt)

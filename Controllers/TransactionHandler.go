@@ -1,7 +1,7 @@
 package Controllers
 
 import (
-	"golang-final-project/Configs"
+	"golang-final-project/Configs/Database"
 	"golang-final-project/Models/Response"
 	"golang-final-project/Models/Transaction"
 	"net/http"
@@ -12,6 +12,7 @@ import (
 
 // Add Transaction
 func AddTransaction(c echo.Context) error {
+
 	var transaction Transaction.TransactionReq
 	c.Bind(&transaction)
 
@@ -25,7 +26,7 @@ func AddTransaction(c echo.Context) error {
 	transaction.TotalQty = totalQty
 	transaction.TotalTransaction = totalPrice
 
-	res := Configs.DB.Create(&Transaction.Transaction{
+	res := Database.DB.Create(&Transaction.Transaction{
 		BankSampahId:      transaction.BankSampahId,
 		UserId:            transaction.UserId,
 		OperatorSampahId:  transaction.OperatorSampahId,
@@ -45,7 +46,7 @@ func AddTransaction(c echo.Context) error {
 
 	var trans = Transaction.Transaction{}
 
-	Configs.DB.Preload("DetailTransaction").Last(&trans)
+	Database.DB.Preload("DetailTransaction").Last(&trans)
 
 	return c.JSON(http.StatusCreated, Response.BaseResponse{
 		Code:    http.StatusCreated,
@@ -58,7 +59,7 @@ func AddTransaction(c echo.Context) error {
 func GetAllTransaction(c echo.Context) error {
 	var trans = []Transaction.Transaction{}
 
-	result := Configs.DB.Preload("DetailTransaction").Find(&trans)
+	result := Database.DB.Preload("DetailTransaction").Find(&trans)
 	if result.Error != nil {
 		return c.JSON(http.StatusGone, Response.BaseResponse{
 			Code:    http.StatusGone,
@@ -87,7 +88,7 @@ func GetTransactionById(c echo.Context) error {
 		})
 	}
 
-	result := Configs.DB.Preload("DetailTransaction").First(&trans, id)
+	result := Database.DB.Preload("DetailTransaction").First(&trans, id)
 
 	if result.Error != nil {
 		return c.JSON(http.StatusGone, Response.BaseResponse{
@@ -117,7 +118,7 @@ func UpdateTansaction(c echo.Context) error {
 		})
 	}
 
-	result := Configs.DB.Preload("DetailTransaction").First(&transaction, id)
+	result := Database.DB.Preload("DetailTransaction").First(&transaction, id)
 	if result.Error != nil {
 		return c.JSON(http.StatusGone, Response.BaseResponse{
 			Code:    http.StatusGone,
@@ -127,7 +128,7 @@ func UpdateTansaction(c echo.Context) error {
 	}
 
 	c.Bind(&transaction)
-	result = Configs.DB.Save(&transaction)
+	result = Database.DB.Save(&transaction)
 	if result.Error != nil {
 		return c.JSON(http.StatusInternalServerError, Response.BaseResponse{
 			Code:    http.StatusInternalServerError,
@@ -136,7 +137,7 @@ func UpdateTansaction(c echo.Context) error {
 		})
 	}
 
-	Configs.DB.Preload("DetailTransaction").First(&transaction, id)
+	Database.DB.Preload("DetailTransaction").First(&transaction, id)
 	return c.JSON(http.StatusAccepted, Response.BaseResponse{
 		Code:    http.StatusAccepted,
 		Message: "successful update data",

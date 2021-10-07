@@ -1,7 +1,7 @@
 package LoginRoute
 
 import (
-	"golang-final-project/Configs"
+	"golang-final-project/Configs/Database"
 	"golang-final-project/Controllers/UserLoginHandler"
 	"os"
 
@@ -13,7 +13,7 @@ func UserLoginRoute(route *echo.Group) {
 	jwtSecretKey := os.Getenv("SECRET_JWT")
 	jwt := middleware.JWT([]byte(jwtSecretKey))
 
-	api := UserLoginHandler.APIEnv{DB: Configs.DB}
+	api := UserLoginHandler.APIEnv{DB: Database.DB}
 
 	route.POST("create-login", api.CreateUserLogin)
 	route.POST("login", api.Login)
