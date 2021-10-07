@@ -3,39 +3,18 @@ package JenisSampahTest
 import (
 	"bytes"
 	"encoding/json"
-	"golang-final-project/Configs/Database"
 	"golang-final-project/Models/Response"
 	"golang-final-project/Models/Transaction"
+	"golang-final-project/Test"
 	"io/ioutil"
-	"log"
 	"net/http"
-	"os"
 	"testing"
 
-	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
-	"gorm.io/gorm"
 )
 
-func setupTestDB() *gorm.DB {
-	errorEnv := godotenv.Load(".env")
-
-	if errorEnv != nil {
-		log.Fatalf("Error loading .env file")
-	}
-
-	Database.Connection(Database.DBConfig{
-		Host:     os.Getenv("DB_HOST"),
-		User:     os.Getenv("DB_USER"),
-		Password: os.Getenv("DB_PASSWORD"),
-		Port:     os.Getenv("DB_PORT"),
-		DBName:   "go_bank_sampah_test",
-	})
-	return Database.DB
-}
-
 func Test_CreateJenisSampah_OK(t *testing.T) {
-	db := setupTestDB()
+	db := Test.SetUpTestDB()
 
 	db.Exec("DELETE FROM jenis_sampahs WHERE id=(SELECT MAX(id) FROM jenis_sampahs)")
 	db.Exec("ALTER TABLE jenis_sampahs AUTO_INCREMENT = 1;")
@@ -84,7 +63,7 @@ func Test_CreateJenisSampah_OK(t *testing.T) {
 }
 
 func Test_GetAllJenisSampah_OK(t *testing.T) {
-	db := setupTestDB()
+	db := Test.SetUpTestDB()
 
 	req, w := setGetAllJenisSampahRouter(db)
 
@@ -115,7 +94,7 @@ func Test_GetAllJenisSampah_OK(t *testing.T) {
 }
 
 func Test_UpdateUser_OK(t *testing.T) {
-	db := setupTestDB()
+	db := Test.SetUpTestDB()
 
 	a := assert.New(t)
 	jenisSampah := Transaction.JenisSampah{
@@ -161,7 +140,7 @@ func Test_UpdateUser_OK(t *testing.T) {
 }
 
 func Test_DeleteUser_OK(t *testing.T) {
-	db := setupTestDB()
+	db := Test.SetUpTestDB()
 
 	a := assert.New(t)
 

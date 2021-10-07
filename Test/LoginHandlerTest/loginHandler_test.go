@@ -3,39 +3,18 @@ package LoginHandlerTest
 import (
 	"bytes"
 	"encoding/json"
-	"golang-final-project/Configs/Database"
 	"golang-final-project/Models/Response"
 	"golang-final-project/Models/UserLogins"
+	"golang-final-project/Test"
 	"io/ioutil"
-	"log"
 	"net/http"
-	"os"
 	"testing"
 
-	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
-	"gorm.io/gorm"
 )
 
-func setupTestDB() *gorm.DB {
-	errorEnv := godotenv.Load(".env")
-
-	if errorEnv != nil {
-		log.Fatalf("Error loading .env file")
-	}
-
-	Database.Connection(Database.DBConfig{
-		Host:     os.Getenv("DB_HOST"),
-		User:     os.Getenv("DB_USER"),
-		Password: os.Getenv("DB_PASSWORD"),
-		Port:     os.Getenv("DB_PORT"),
-		DBName:   "go_bank_sampah_test",
-	})
-	return Database.DB
-}
-
 func Test_CreateUserLogin_OK(t *testing.T) {
-	db := setupTestDB()
+	db := Test.SetUpTestDB()
 
 	db.Exec("DELETE FROM login_data_users;")
 	db.Exec("ALTER TABLE login_data_users AUTO_INCREMENT = 1;")
@@ -85,7 +64,7 @@ func Test_CreateUserLogin_OK(t *testing.T) {
 }
 
 func Test_Login_OK(t *testing.T) {
-	db := setupTestDB()
+	db := Test.SetUpTestDB()
 
 	a := assert.New(t)
 	login := UserLogins.Login{
@@ -130,7 +109,7 @@ func Test_Login_OK(t *testing.T) {
 }
 
 func Test_UpdateLogin_OK(t *testing.T) {
-	db := setupTestDB()
+	db := Test.SetUpTestDB()
 
 	a := assert.New(t)
 	userLogin := UserLogins.LoginDataUsers{
@@ -176,7 +155,7 @@ func Test_UpdateLogin_OK(t *testing.T) {
 }
 
 func Test_GetUserLoginByID_OK(t *testing.T) {
-	db := setupTestDB()
+	db := Test.SetUpTestDB()
 
 	a := assert.New(t)
 

@@ -3,39 +3,18 @@ package BankSampahTest
 import (
 	"bytes"
 	"encoding/json"
-	"golang-final-project/Configs/Database"
 	"golang-final-project/Models/BankSampah"
 	"golang-final-project/Models/Response"
+	"golang-final-project/Test"
 	"io/ioutil"
-	"log"
 	"net/http"
-	"os"
 	"testing"
 
-	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
-	"gorm.io/gorm"
 )
 
-func setupTestDB() *gorm.DB {
-	errorEnv := godotenv.Load(".env")
-
-	if errorEnv != nil {
-		log.Fatalf("Error loading .env file")
-	}
-
-	Database.Connection(Database.DBConfig{
-		Host:     os.Getenv("DB_HOST"),
-		User:     os.Getenv("DB_USER"),
-		Password: os.Getenv("DB_PASSWORD"),
-		Port:     os.Getenv("DB_PORT"),
-		DBName:   "go_bank_sampah_test",
-	})
-	return Database.DB
-}
-
 func Test_CreateBankSampah_OK(t *testing.T) {
-	db := setupTestDB()
+	db := Test.SetUpTestDB()
 
 	// db.Exec("DELETE FROM bank_sampahs WHERE id=(SELECT MAX(id) FROM bank_sampahs)")
 	db.Exec("ALTER TABLE bank_sampahs AUTO_INCREMENT = 1;")
@@ -88,7 +67,7 @@ func Test_CreateBankSampah_OK(t *testing.T) {
 }
 
 func Test_GetBankSampah_OK(t *testing.T) {
-	db := setupTestDB()
+	db := Test.SetUpTestDB()
 
 	req, w := setGetBankSampahRouter(db)
 
@@ -119,7 +98,7 @@ func Test_GetBankSampah_OK(t *testing.T) {
 }
 
 func Test_UpdateUser_OK(t *testing.T) {
-	db := setupTestDB()
+	db := Test.SetUpTestDB()
 
 	a := assert.New(t)
 	bankSampah := BankSampah.BankSampah{
@@ -169,7 +148,7 @@ func Test_UpdateUser_OK(t *testing.T) {
 }
 
 func Test_DeleteBankSampah_OK(t *testing.T) {
-	db := setupTestDB()
+	db := Test.SetUpTestDB()
 
 	a := assert.New(t)
 
