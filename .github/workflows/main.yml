@@ -16,19 +16,18 @@ jobs:
         go-version: 1.17
     # - name: Test
     #   run: go test -v ./...
+    - name: Create env file
+      run: |
+        touch .env
+        echo {{ secrets.ENV }} > .env  
+        cat .env
+
     - name: docker login
       env:
         DOCKER_USER: ${{ secrets.DOCKER_HUB_USERNAME }} 
         DOCKER_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}  
       run: |
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-    
-    - name: Create env file
-        run: |
-          touch .env
-          echo DB_HOST=${{ secrets.ENV }} >> .env  
-          cat .env
-
     - name: docker build golang
       run: |
         docker build . -t fadhilansyah25/golang-final-project:1.0.0
