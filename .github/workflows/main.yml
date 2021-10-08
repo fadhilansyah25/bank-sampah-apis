@@ -23,12 +23,20 @@ jobs:
       run: |
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
     
+    - name: Create env file
+        run: |
+          touch .env
+          echo DB_HOST=${{ secrets.ENV }} >> .env  
+          cat .env
+
     - name: docker build golang
       run: |
         docker build . -t fadhilansyah25/golang-final-project:1.0.0
+
     - name: docker push
       run: |
         docker push fadhilansyah25/golang-final-project:1.0.0
+
     - name: Build, Push and Release a Docker container to Heroku.
       uses: gonuit/heroku-docker-deploy@v1.3.3
       with: 
