@@ -16,19 +16,26 @@ jobs:
         go-version: 1.17
     # - name: Test
     #   run: go test -v ./...
+    - name: Create env file
+      run: |
+        touch .env
+          echo DB_HOST=${{ secrets.DB_HOST }} >> .env
+          echo DB_PORT=${{ secrets.DB_PORT }} >> .env
+          echo DB_USER=${{ secrets.DB_USER }} >> .env
+          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
+          echo DB_NAME=${{ secrets.DB_NAME }} >> .env
+          echo PORT=${{ secrets.PORT }} >> .env
+          echo DB_MONGO_USERNAME=${{ secrets.DB_MONGO_USERNAME }} >> .env
+          echo DB_MONGO_PASSWORD=${{ secrets.DB_MONGO_PASSWORD }} >> .env
+          echo SECRET_JWT=${{ secrets.SECRET_JWT }} >> .env
+          cat .env 
+
     - name: docker login
       env:
         DOCKER_USER: ${{ secrets.DOCKER_HUB_USERNAME }} 
         DOCKER_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}  
       run: |
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-    
-    - name: Create env file
-        run: |
-          touch .env
-          echo DB_HOST=${{ secrets.ENV }} >> .env  
-          cat .env
-
     - name: docker build golang
       run: |
         docker build . -t fadhilansyah25/golang-final-project:1.0.0
